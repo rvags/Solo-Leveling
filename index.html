@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solo Leveling: Despertar das Sombras</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #1a0b2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .stars-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, #4b0082, #0f001f);
+            z-index: -1;
+        }
+        .stars-bg::before, .stars-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            background-image: radial-gradient(2px 2px at 10px 20px, #fff, rgba(0,0,0,0)),
+                              radial-gradient(2px 2px at 30px 60px, #f8f, rgba(0,0,0,0)),
+                              radial-gradient(2px 2px at 50px 150px, #b6f, rgba(0,0,0,0)),
+                              radial-gradient(2px 2px at 120px 80px, #fff, rgba(0,0,0,0)),
+                              radial-gradient(3px 3px at 200px 300px, #e0b0ff, rgba(0,0,0,0)),
+                              radial-gradient(2px 2px at 400px 150px, #c0a0ff, rgba(0,0,0,0)),
+                              radial-gradient(4px 4px at 600px 500px, #d8b8ff, rgba(0,0,0,0)),
+                              radial-gradient(3px 3px at 800px 200px, #ffffff, rgba(0,0,0,0)),
+                              radial-gradient(2px 2px at 900px 700px, #f0e0ff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            opacity: 0.6;
+            animation: twinkle 4s infinite alternate;
+        }
+        .stars-bg::after {
+            background-size: 300px 300px;
+            opacity: 0.4;
+            animation: twinkle 6s infinite alternate-reverse;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.2; }
+            100% { opacity: 0.9; }
+        }
+        #gameContainer {
+            width: 1200px;
+            max-width: 95vw;
+            height: 800px;
+            max-height: 90vh;
+            background: rgba(20, 5, 40, 0.8);
+            backdrop-filter: blur(6px);
+            border: 2px solid #a55aff;
+            border-radius: 30px;
+            box-shadow: 0 0 40px #9f4fdf;
+            padding: 20px;
+            color: #f0e6ff;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .hidden {
+            display: none !important;
+        }
+        #startScreen {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        #startScreen h1 {
+            font-size: 5rem;
+            text-shadow: 0 0 20px #b300ff, 0 0 40px #7700ff;
+            margin-bottom: 10px;
+            letter-spacing: 5px;
+        }
+        .criador {
+            font-size: 1.8rem;
+            color: #ffd966;
+            text-shadow: 0 0 15px #b266ff;
+            margin-bottom: 40px;
+            display: inline-block;
+        }
+        .surgir-btn {
+            background: linear-gradient(145deg, #6a1f9e, #38006b);
+            border: 3px solid #ca9eff;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            padding: 20px 60px;
+            border-radius: 60px;
+            cursor: pointer;
+            box-shadow: 0 0 30px #b76eff;
+            transition: 0.2s;
+            text-transform: uppercase;
+        }
+        .surgir-btn:hover {
+            transform: scale(1.1);
+            background: #8a2be2;
+            box-shadow: 0 0 50px #d4a1ff;
+        }
+        #creationScreen {
+            justify-content: center;
+            align-items: center;
+        }
+        .creation-box {
+            background: rgba(48, 12, 70, 0.9);
+            padding: 40px;
+            border-radius: 40px;
+            border: 2px solid #b77eff;
+            width: 500px;
+            max-width: 90%;
+            text-align: center;
+        }
+        .creation-box h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+        .creation-box label {
+            font-size: 1.5rem;
+            display: block;
+            margin: 20px 0 10px;
+        }
+        .creation-box input, .creation-box select {
+            background: #2e1047;
+            border: 2px solid #a155e0;
+            color: white;
+            font-size: 1.4rem;
+            padding: 8px 20px;
+            border-radius: 40px;
+            width: 80%;
+            margin-bottom: 20px;
+        }
+        .creation-box select {
+            width: 50%;
+        }
+        .surgir-small {
+            font-size: 2rem;
+            padding: 10px 40px;
+            margin-top: 20px;
+        }
+        #gameScreen {
+            flex-direction: row;
+            gap: 15px;
+        }
+        #mapPanel {
+            width: 30%;
+            background: rgba(25, 5, 45, 0.9);
+            border-radius: 30px;
+            padding: 15px;
+            border: 2px solid #b471ff;
+            display: flex;
+            flex-direction: column;
+        }
+        #mapPanel h3 {
+            text-align: center;
+            font-size: 2rem;
+            margin: 0 0 10px;
+            border-bottom: 2px solid #b77eff;
+        }
+        .area-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex: 1;
+        }
+        .area-card {
+            background: #341d4e;
+            border-radius: 20px;
+            padding: 10px;
+            border: 2px solid #9f6fe0;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+        }
+        .area-card:hover {
+            background: #5b2e8a;
+            border-color: #e5b2ff;
+        }
+        .area-card.selected {
+            background: #7b3fb0;
+            border-color: #ffd966;
+        }
+        .area-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        .area-desc {
+            font-size: 1.2rem;
+        }
+        #enemyList {
+            margin-top: 15px;
+            background: #221134;
+            border-radius: 20px;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .enemy-entry {
+            background: #442b63;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #aa88ff;
+            cursor: pointer;
+        }
+        .enemy-entry:hover {
+            background: #6d44a3;
+        }
+        #infoPanel {
+            width: 45%;
+            background: rgba(30, 10, 50, 0.9);
+            border-radius: 30px;
+            padding: 15px;
+            border: 2px solid #b471ff;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        #playerStats {
+            background: #221134;
+            border-radius: 20px;
+            padding: 10px;
+            font-size: 1.1rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+        }
+        #xpBarContainer {
+            grid-column: span 2;
+            background: #0d0321;
+            border-radius: 20px;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        #xpBarLabel {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 3px;
+        }
+        #xpBarFill {
+            height: 16px;
+            background: linear-gradient(90deg, #8a2be2, #b266ff);
+            border-radius: 20px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        #logArea {
+            background: #0d0321;
+            border-radius: 20px;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            font-size: 1.2rem;
+            border: 1px solid #b28aff;
+        }
+        #combatActions, #shadowRecruit {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .btn {
+            background: #4a2a6b;
+            border: 2px solid #c69cff;
+            color: white;
+            font-size: 1.3rem;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .btn:hover:not(:disabled) {
+            background: #7a4fb3;
+            border-color: #f2daff;
+        }
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        #rightPanel {
+            width: 25%;
+            background: rgba(25, 5, 45, 0.9);
+            border-radius: 30px;
+            padding: 15px;
+            border: 2px solid #b471ff;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        #shadowList {
+            background: #1f0a33;
+            border-radius: 20px;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .shadow-item {
+            background: #371d52;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid #ad73e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .shadow-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .shadow-name {
+            font-weight: bold;
+        }
+        .shadow-bonus {
+            font-size: 0.8rem;
+            color: #aaffaa;
+        }
+        .btn-vender {
+            background: #8b0000;
+            border: 1px solid #ff6666;
+            color: white;
+            font-size: 0.9rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .btn-vender:hover {
+            background: #b30000;
+        }
+        #shopPanel {
+            background: #2d1545;
+            border-radius: 20px;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .equip-slot {
+            background: #1e0b2e;
+            margin: 10px 0;
+            padding: 8px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .slot-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #2e154a;
+            padding: 5px;
+            border-radius: 8px;
+        }
+        .item-info {
+            font-size: 0.9rem;
+        }
+        .btn-equip {
+            font-size: 1rem;
+            padding: 4px 10px;
+        }
+        #gemsDisplay {
+            font-size: 1.6rem;
+            color: #ffd966;
+            text-align: center;
+        }
+        #btnSubirRanking {
+            width: 100%;
+            margin-bottom: 10px;
+            background: #9b4dff;
+            border-color: #ffcc66;
+        }
+    </style>
+</head>
+<body>
+<div class="stars-bg"></div>
+<div id="gameContainer">
+    <!-- TELA INICIAL -->
+    <div id="startScreen" class="screen">
+        <h1>SOLO LEVELING</h1>
+        <div class="criador">Renan Vinicius A. G. da Silva</div>
+        <button class="surgir-btn" id="btnSurgirInicial">SURGIR</button>
+    </div>
+
+    <!-- TELA DE CRIAÇÃO -->
+    <div id="creationScreen" class="screen hidden">
+        <div class="creation-box">
+            <h2>✨ DESPERTAR ✨</h2>
+            <label>NOME DO CAÇADOR</label>
+            <input type="text" id="playerName" maxlength="20" placeholder="Ex: Jin-Woo">
+            <label>GÊNERO</label>
+            <select id="playerGender">
+                <option value="masculino">Masculino</option>
+                <option value="feminino">Feminino</option>
+            </select>
+            <button class="surgir-btn surgir-small" id="btnIniciarJogo">SURGIR</button>
+        </div>
+    </div>
+
+    <!-- TELA PRINCIPAL DO JOGO -->
+    <div id="gameScreen" class="screen hidden">
+        <!-- MAPA (esquerda) -->
+        <div id="mapPanel">
+            <h3>🌍 MUNDO SOLO </h3>
+            <div class="area-list">
+                <div class="area-card" data-area="campo">
+                    <div class="area-name">🌾 CAMPO</div>
+                    <div class="area-desc">Rural, sombras rank E-D</div>
+                </div>
+                <div class="area-card" data-area="deserto">
+                    <div class="area-name">🏜️ DESERTO</div>
+                    <div class="area-desc">Árido, rank C-B</div>
+                </div>
+                <div class="area-card" data-area="castelo">
+                    <div class="area-name">🏰 CASTELO</div>
+                    <div class="area-desc">Fortaleza de Igris (Rank S)</div>
+                </div>
+            </div>
+            <div id="enemyList">
+                <div style="text-align:center;">Selecione uma área</div>
+            </div>
+        </div>
+
+        <!-- INFO CENTRAL -->
+        <div id="infoPanel">
+            <div id="playerStats">
+                <span id="statName">???</span>
+                <span id="statGender"></span>
+                <span>❤️VIDA: <span id="statHp">0</span>/<span id="statMaxHp">0</span></span>
+                <span>🔮MANA: <span id="statMana">0</span></span>
+                <span>⚔️FORÇA: <span id="statForca">0</span></span>
+                <span>📊RANK: <span id="statRank">E</span></span>
+                <span>💎GEMAS: <span id="statGemas">0</span></span>
+                <span>⬆️NÍVEL: <span id="statNivel">1</span></span>
+                <span>🔹PONTOS: <span id="statPontos">0</span></span>
+                <!-- Barra de XP -->
+                <div id="xpBarContainer">
+                    <div id="xpBarLabel">
+                        <span>XP</span>
+                        <span id="xpText">0/100</span>
+                    </div>
+                    <div id="xpBarFill" style="width:0%"></div>
+                </div>
+            </div>
+            <div id="logArea">
+                [Sistema] Bem-vindo ao jogo. Escolha uma área.
+            </div>
+            <div id="combatActions" class="hidden">
+                <button class="btn" id="btnAtacar">⚔️ Atacar</button>
+                <button class="btn" id="btnFugir">🏃 Fugir</button>
+            </div>
+            <div id="shadowRecruit" class="hidden">
+                <button class="btn" id="btnTornarSombra">👤 Tornar Sombra (3 tent.)</button>
+                <button class="btn" id="btnEliminar">💀 Eliminar</button>
+            </div>
+            <div id="levelUpActions" class="hidden">
+                <button class="btn" id="btnForca">+Força</button>
+                <button class="btn" id="btnMana">+Mana</button>
+                <button class="btn" id="btnVida">+Vida</button>
+            </div>
+        </div>
+
+        <!-- PAINEL DIREITO (sombras, loja, gems) -->
+        <div id="rightPanel">
+            <button id="btnSubirRanking" class="btn">⬆️ SUBIR RANKING</button>
+            <div id="gemsDisplay">💎 0</div>
+            <div>
+                <h4>🛡️ EQUIPAMENTOS</h4>
+                <div id="shopPanel">
+                    <!-- Será preenchido dinamicamente -->
+                </div>
+            </div>
+            <div>
+                <h4>👥 SOMBRAS (<span id="shadowCount">0</span>/<span id="maxShadow">0</span>)</h4>
+                <div id="shadowList"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    // ---------- CATÁLOGO DE ITENS ----------
+    const itemCatalog = {
+        cabeca: [
+            { id: 'capacete_couro', nome: 'Capacete de Couro RANK(E)', hp: 2, preco: 5 },
+            { id: 'elmo_ferro', nome: 'Elmo de Ferro RANK(D)', hp: 20, preco: 35 },
+            { id: 'capacete_espinhos', nome: 'Capacete de Espinho RANK(C)', hp: 62, forca: 130, preco: 85 },
+            { id: 'coroa_mana', nome: 'Coroa de Mana RANK(E)', mana: 10, preco: 15 },
+            { id: 'capacete_betinha', nome: 'Capacete Betinha RANK(C)', hp: 230, preco: 160 },
+            { id: 'capacete_de_ferro', nome: 'Capacete de Ferro RANK(B)', hp: 500, preco: 410 },
+            { id: 'capacete_de_ouro', nome: 'Capacete de Ouro RANK(A)', hp: 750, preco: 820 },
+            { id: 'coroa_das_sombras', nome: 'Coroa das Sombras RANK(S)', hp: 2000, preco: 1700 }
+        ],
+        maoD: [
+            { id: 'adaga', nome: 'Adaga RANK(E)', forca: 7, preco: 5 },
+            { id: 'espada_curta', nome: 'Espada Curta RANK(D)', forca: 20, preco: 35 },
+            { id: 'espada_longa', nome: 'Espada Longa RANK(D)', forca: 50, preco: 70 },
+            { id: 'cajado', nome: 'Cajado RANK(C)', mana: 90, preco: 130 },
+            { id: 'lança', nome: 'Lança RANK(C)', forca: 130, preco: 240 },
+            { id: 'maca_de_espinhos', nome: 'Maçã de Espinhos RANK(B)', forca: 260, preco: 350 },
+            { id: 'espada_de_sombras', nome: 'Espada de Sombras RANK(A)', forca: 670, preco: 700 },
+            { id: 'foice_da_morte', nome: 'Foice da Morte RANK(S)', forca: 2000, preco: 2500 }
+        ],
+        maoE: [
+            { id: 'escudo_madeira', nome: 'Escudo de Madeira', hp: 8, preco: 12 },
+            { id: 'luva_sombra', nome: 'Luva de Sombra', mana: 5, preco: 18 }
+        ],
+        tronco: [
+            { id: 'armadura_couro', nome: 'Armadura de Couro', hp: 10, preco: 20 },
+            { id: 'peitoral_aco', nome: 'Peitoral de Aço', hp: 20, forca: 1, preco: 30 }
+        ],
+        pernas: [
+            { id: 'grevas_couro', nome: 'Grevas de Couro', hp: 5, preco: 15 },
+            { id: 'calca_tecido', nome: 'Calça de Tecido', mana: 5, preco: 10 }
+        ]
+    };
+
+    // Bônus por rank de sombra (PG razão 2)
+    function getBonusPorRank(rank) {
+        switch(rank) {
+            case 'E': return { forca: 10, hp: 50 };
+            case 'D': return { forca: 30, hp: 100 };
+            case 'C': return { forca: 50, hp: 250 };
+            case 'B': return { forca: 70, hp: 400 };
+            case 'A': return { forca: 160, hp: 800 };
+            case 'S': return { forca: 480, hp: 2400 }; // 3x o A (16*3)
+            default: return { forca: 0, hp: 0 };
+        }
+    }
+
+    // Preço de venda das sombras por rank (também em PG)
+    function getPrecoVenda(rank) {
+        switch(rank) {
+            case 'E': return 10;
+            case 'D': return 20;
+            case 'C': return 40;
+            case 'B': return 80;
+            case 'A': return 160;
+            case 'S': return 480; // 3x o A
+            default: return 0;
+        }
+    }
+
+    // ---------- ESTADO GLOBAL ----------
+    let player = {
+        name: '',
+        gender: 'masculino',
+        level: 1,
+        xp: 0,
+        xpNext: 100,
+        rank: 'E',
+        gems: 50, // começa com 50 para testes
+        base: {
+            forca: 10,
+            mana: 20,
+            maxHp: 100
+        },
+        hp: 100, // atual
+        shadows: [], // sombras recrutadas {nome, rank, nivel}
+        equipment: { // guarda o id do item equipado (ou null)
+            cabeca: null,
+            maoD: null,
+            maoE: null,
+            tronco: null,
+            pernas: null
+        },
+        inventario: [], // lista de ids de itens que o jogador possui
+        pontosStatus: 0
+    };
+
+    // Totais calculados (base + equipamentos + sombras)
+    let totalForca = player.base.forca;
+    let totalMana = player.base.mana;
+    let totalMaxHp = player.base.maxHp;
+
+    function recalcularTotais() {
+        totalForca = player.base.forca;
+        totalMana = player.base.mana;
+        totalMaxHp = player.base.maxHp;
+
+        // Equipamentos
+        for (let slot in player.equipment) {
+            let itemId = player.equipment[slot];
+            if (itemId) {
+                let item = encontrarItemPorId(slot, itemId);
+                if (item) {
+                    totalForca += item.forca || 0;
+                    totalMana += item.mana || 0;
+                    totalMaxHp += item.hp || 0;
+                }
+            }
+        }
+
+        // Sombras ativas (todas contam, respeitando limite)
+        player.shadows.forEach(s => {
+            let bonus = getBonusPorRank(s.rank);
+            totalForca += bonus.forca;
+            totalMaxHp += bonus.hp;
+        });
+
+        if (player.hp > totalMaxHp) player.hp = totalMaxHp;
+    }
+
+    function encontrarItemPorId(slot, id) {
+        return itemCatalog[slot].find(i => i.id === id);
+    }
+
+    // Multiplicadores de atributos por rank (PG razão 2, A->S 3x)
+    const rankMultiplier = {
+        'E': 1,
+        'D': 2,
+        'C': 4,
+        'B': 8,
+        'A': 16,
+        'S': 48   // 16 * 3
+    };
+
+    // Função para gerar inimigos com progressão geométrica
+    function gerarInimigos(area, quantidade) {
+        let lista = [];
+        for (let i = 0; i < quantidade; i++) {
+            let rank;
+            if (area === 'campo') rank = Math.random() < 0.7 ? 'E' : 'D';
+            else if (area === 'deserto') rank = ['C','B'][Math.floor(Math.random()*2)];
+            else { // castelo
+                if (i === 0) rank = 'S'; // Igris
+                else rank = Math.random() < 0.6 ? 'A' : 'B';
+            }
+            let mult = rankMultiplier[rank];
+            let nome = `${rank} · Sombra ${i+1}`;
+            if (rank === 'S') nome = '⚔️ IGRIS (S)';
+            let hp = 30 * mult;        // base 30 para E
+            let forca = 5 * mult;       // base 5 para E
+            let xp = 20 * mult;         // base 20 para E
+            let gem = 5 * mult;          // base 5 para E
+            lista.push({
+                nome,
+                rank,
+                hp,
+                maxHp: hp,
+                forca,
+                xp,
+                gem,
+                vivo: true
+            });
+        }
+        return lista;
+    }
+
+    // Mapa: 3 áreas com 30 sombras totais (distribuídas)
+    const areas = {
+        campo: {
+            nome: '🌾 Campo',
+            inimigos: gerarInimigos('campo', 12)
+        },
+        deserto: {
+            nome: '🏜️ Deserto',
+            inimigos: gerarInimigos('deserto', 12)
+        },
+        castelo: {
+            nome: '🏰 Castelo',
+            inimigos: gerarInimigos('castelo', 6)
+        }
+    };
+
+    // Função para verificar se todos os inimigos de uma área estão mortos e regenerá-los
+    function regenerarAreaSeNecessario(areaNome) {
+        let area = areas[areaNome];
+        if (!area) return;
+        let todosMortos = area.inimigos.every(inimigo => !inimigo.vivo);
+        if (todosMortos) {
+            area.inimigos = gerarInimigos(areaNome, area.inimigos.length);
+            addLog(`🌀 A área ${area.nome} foi regenerada com novas sombras!`);
+        }
+    }
+
+    // Estado de combate
+    let currentArea = null;
+    let currentEnemyIndex = null; // para inimigos de área
+    let inCombat = false;
+    let recruitAttempts = 0;
+    let isTestRank = false; // se true, o inimigo atual é do teste de ranking
+
+    function addLog(msg) {
+        let log = document.getElementById('logArea');
+        log.innerHTML += '<br>> ' + msg;
+        log.scrollTop = log.scrollHeight;
+    }
+
+    // Regenerar vida após combate
+    function regenerarVida() {
+        player.hp = totalMaxHp;
+    }
+
+    // Função para aplicar penalidade de morte: perde todas as gemas e TODOS os itens (inventário inteiro)
+    function aplicarPenalidadeMorte() {
+        player.gems = 0;
+        // Remove todos os itens do inventário
+        player.inventario = [];
+        // Remove todos os equipamentos
+        for (let slot in player.equipment) {
+            player.equipment[slot] = null;
+        }
+        addLog('💔 Você morreu! Perdeu todas as gemas e todos os itens.');
+    }
+
+    // Função para aplicar penalidade de fuga: perde 20% das gemas atuais (mínimo 1)
+    function aplicarPenalidadeFuga() {
+        let perda = Math.max(1, Math.floor(player.gems * 0.2));
+        player.gems = Math.max(0, player.gems - perda);
+        addLog(`🏃 Você fugiu! Perdeu ${perda} gemas.`);
+    }
+
+    // Função para vender uma sombra
+    function venderSombra(index) {
+        if (inCombat) {
+            addLog('Não pode vender sombras durante combate.');
+            return;
+        }
+        if (index < 0 || index >= player.shadows.length) return;
+        let sombra = player.shadows[index];
+        let preco = getPrecoVenda(sombra.rank);
+        player.gems += preco;
+        player.shadows.splice(index, 1);
+        addLog(`💰 Você vendeu ${sombra.nome} por ${preco} gemas.`);
+        refreshUI();
+    }
+
+    // Função para atualizar toda a interface
+    function refreshUI() {
+        recalcularTotais();
+
+        document.getElementById('statName').innerText = player.name || '???';
+        document.getElementById('statGender').innerText = player.gender === 'masculino' ? '♂' : '♀';
+        document.getElementById('statHp').innerText = player.hp;
+        document.getElementById('statMaxHp').innerText = totalMaxHp;
+        document.getElementById('statMana').innerText = totalMana;
+        document.getElementById('statForca').innerText = totalForca;
+        document.getElementById('statRank').innerText = player.rank;
+        document.getElementById('statGemas').innerText = player.gems;
+        document.getElementById('statNivel').innerText = player.level;
+        document.getElementById('statPontos').innerText = player.pontosStatus;
+        document.getElementById('gemsDisplay').innerHTML = `💎 ${player.gems}`;
+        
+        // Atualizar barra de XP
+        let xpPercent = (player.xp / player.xpNext) * 100;
+        document.getElementById('xpBarFill').style.width = xpPercent + '%';
+        document.getElementById('xpText').innerText = `${player.xp}/${player.xpNext}`;
+
+        let maxShadow = Math.floor(totalMana / 20);
+        document.getElementById('maxShadow').innerText = maxShadow;
+        document.getElementById('shadowCount').innerText = player.shadows.length;
+
+        // Lista de sombras com bônus e botão vender
+        let sl = document.getElementById('shadowList');
+        sl.innerHTML = '';
+        player.shadows.forEach((s, idx) => {
+            let bonus = getBonusPorRank(s.rank);
+            let precoVenda = getPrecoVenda(s.rank);
+            let d = document.createElement('div');
+            d.className = 'shadow-item';
+            d.innerHTML = `
+                <div class="shadow-info">
+                    <span class="shadow-name">${s.nome} (${s.rank})</span>
+                    <span class="shadow-bonus">+${bonus.forca}⚔️ +${bonus.hp}❤️</span>
+                </div>
+                <button class="btn-vender" data-index="${idx}">Vender (💎${precoVenda})</button>
+            `;
+            sl.appendChild(d);
+        });
+
+        // Adicionar eventos aos botões de vender
+        document.querySelectorAll('.btn-vender').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                let index = parseInt(e.target.dataset.index);
+                venderSombra(index);
+            });
+        });
+
+        // Atualizar lista de inimigos na área selecionada (se não estiver em teste)
+        let enemyDiv = document.getElementById('enemyList');
+        if (!isTestRank && currentArea) {
+            let area = areas[currentArea];
+            let html = `<h4>${area.nome}</h4>`;
+            area.inimigos.forEach((inv, idx) => {
+                if (inv.vivo) {
+                    html += `<div class="enemy-entry" data-area="${currentArea}" data-idx="${idx}">${inv.nome} ❤️${inv.hp}/${inv.maxHp}</div>`;
+                } else {
+                    html += `<div class="enemy-entry" style="opacity:0.5;" data-area="${currentArea}" data-idx="${idx}">💀 ${inv.nome} (derrotado)</div>`;
+                }
+            });
+            enemyDiv.innerHTML = html;
+
+            document.querySelectorAll('.enemy-entry').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    if (inCombat) { addLog('Você já está em combate!'); return; }
+                    let area = el.dataset.area;
+                    let idx = parseInt(el.dataset.idx);
+                    let inimigo = areas[area].inimigos[idx];
+                    if (!inimigo.vivo) { addLog('Este inimigo já foi derrotado.'); return; }
+                    currentArea = area;
+                    currentEnemyIndex = idx;
+                    isTestRank = false;
+                    inCombat = true;
+                    recruitAttempts = 3;
+                    document.getElementById('combatActions').classList.remove('hidden');
+                    document.getElementById('shadowRecruit').classList.add('hidden');
+                    addLog(`⚔️ Combate iniciado contra ${inimigo.nome} (Rank ${inimigo.rank})`);
+                });
+            });
+        } else if (isTestRank) {
+            enemyDiv.innerHTML = '<h4>⚔️ TESTE DE RANKING</h4><p>Você está em combate de teste. Finalize ou fuja.</p>';
+        } else {
+            enemyDiv.innerHTML = '<div style="text-align:center;">Selecione uma área no mapa</div>';
+        }
+
+        // Exibir/esconder botões de level up
+        if (player.pontosStatus > 0) {
+            document.getElementById('levelUpActions').classList.remove('hidden');
+        } else {
+            document.getElementById('levelUpActions').classList.add('hidden');
+        }
+
+        // Atualizar loja de equipamentos
+        renderShop();
+    }
+
+    // Renderizar a loja com itens
+    function renderShop() {
+        let shopDiv = document.getElementById('shopPanel');
+        let html = '';
+        for (let slot in itemCatalog) {
+            let slotNome = {
+                cabeca: 'Cabeça', maoD: 'Mão D', maoE: 'Mão E', tronco: 'Tronco', pernas: 'Pernas'
+            }[slot];
+            html += `<div class="equip-slot"><div class="slot-header">${slotNome}</div>`;
+            itemCatalog[slot].forEach(item => {
+                let equipado = player.equipment[slot] === item.id ? '✔️' : '';
+                let possui = player.inventario.includes(item.id);
+                let textoBotao = '';
+                if (equipado) {
+                    textoBotao = 'Equipado';
+                } else if (possui) {
+                    textoBotao = 'Equipar (já possui)';
+                } else {
+                    textoBotao = `Comprar (💎${item.preco})`;
+                }
+                html += `<div class="item-row">
+                    <span class="item-info">${item.nome} (HP:${item.hp||0} FOR:${item.forca||0} MAN:${item.mana||0})</span>
+                    <button class="btn btn-equip" data-slot="${slot}" data-item-id="${item.id}">${textoBotao}</button>
+                </div>`;
+            });
+            // Opção para remover equipamento (nenhum) - só aparece se tiver algo equipado
+            if (player.equipment[slot]) {
+                html += `<div class="item-row">
+                    <span class="item-info">Nenhum</span>
+                    <button class="btn btn-equip" data-slot="${slot}" data-item-id="none">Remover</button>
+                </div>`;
+            }
+            html += '</div>';
+        }
+        shopDiv.innerHTML = html;
+
+        // Adicionar eventos aos botões de equipar
+        document.querySelectorAll('.btn-equip').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                let slot = e.target.dataset.slot;
+                let itemId = e.target.dataset.itemId === 'none' ? null : e.target.dataset.itemId;
+                equiparItem(slot, itemId);
+            });
+        });
+    }
+
+    // Função para equipar/remover item (agora com inventário)
+    function equiparItem(slot, itemId) {
+        if (inCombat) { addLog('Não pode equipar durante combate.'); return; }
+
+        // Caso seja remoção (itemId = null)
+        if (itemId === null) {
+            player.equipment[slot] = null;
+            addLog(`Removeu equipamento do slot ${slot}.`);
+            refreshUI();
+            return;
+        }
+
+        // Verificar se o item existe no catálogo
+        let item = encontrarItemPorId(slot, itemId);
+        if (!item) {
+            addLog('Item inválido.');
+            return;
+        }
+
+        // Verificar se já possui o item
+        if (player.inventario.includes(itemId)) {
+            // Já possui: equipar diretamente
+            player.equipment[slot] = itemId;
+            addLog(`Equipou ${item.nome} no slot ${slot}.`);
+        } else {
+            // Não possui: tentar comprar
+            if (player.gems < item.preco) {
+                addLog('Gemas insuficientes!');
+                return;
+            }
+            player.gems -= item.preco;
+            player.inventario.push(itemId);
+            player.equipment[slot] = itemId;
+            addLog(`Comprou e equipou ${item.nome} no slot ${slot}.`);
+        }
+
+        refreshUI();
+    }
+
+    // Combate: atacar
+    function atacar() {
+        if (!inCombat) return;
+
+        let inimigo;
+        if (isTestRank) {
+            if (!window.currentTestEnemy) return;
+            inimigo = window.currentTestEnemy;
+        } else {
+            if (currentEnemyIndex === null) return;
+            inimigo = areas[currentArea].inimigos[currentEnemyIndex];
+        }
+
+        if (!inimigo.vivo) { 
+            inCombat = false; 
+            if (!isTestRank) currentEnemyIndex = null;
+            else window.currentTestEnemy = null;
+            regenerarVida();
+            refreshUI(); 
+            return; 
+        }
+
+        // Jogador ataca - dano agora é (força * 2) + aleatório para tornar diferença mais significativa
+        let dano = (totalForca * 2) + Math.floor(Math.random() * 5);
+        inimigo.hp -= dano;
+        addLog(`Você causou ${dano} de dano. ${inimigo.nome} HP: ${inimigo.hp}/${inimigo.maxHp}`);
+
+        if (inimigo.hp <= 0) {
+            // Vitória
+            inimigo.vivo = false;
+            if (!isTestRank) {
+                // Inimigo normal
+                player.xp += inimigo.xp;
+                player.gems += inimigo.gem;
+                addLog(`💀 ${inimigo.nome} derrotado! +${inimigo.xp} XP, +${inimigo.gem} gemas.`);
+                // Verificar level up
+                while (player.xp >= player.xpNext) {
+                    player.level++;
+                    player.xp -= player.xpNext;
+                    player.xpNext = Math.floor(player.xpNext * 1.5);
+                    player.pontosStatus += 3;
+                    addLog(`⬆️ Subiu para nível ${player.level}! Ganhou 3 pontos de status.`);
+                }
+                // Oferecer recrutamento
+                inCombat = false;
+                document.getElementById('combatActions').classList.add('hidden');
+                document.getElementById('shadowRecruit').classList.remove('hidden');
+            } else {
+                // Teste de ranking: subir de rank
+                let rankAtual = player.rank;
+                let proximoRank = obterProximoRank(rankAtual);
+                if (proximoRank) {
+                    player.rank = proximoRank;
+                    addLog(`🎉 PARABÉNS! Você subiu para o Rank ${proximoRank}!`);
+                } else {
+                    addLog(`Você já é Rank S, não pode subir mais.`);
+                }
+                inCombat = false;
+                isTestRank = false;
+                window.currentTestEnemy = null;
+                document.getElementById('combatActions').classList.add('hidden');
+                document.getElementById('shadowRecruit').classList.add('hidden');
+            }
+            regenerarVida();
+            // Verificar se a área precisa ser regenerada
+            if (!isTestRank && currentArea) {
+                regenerarAreaSeNecessario(currentArea);
+            }
+            refreshUI();
+            return;
+        }
+
+        // Inimigo ataca
+        let danoInimigo = inimigo.forca + Math.floor(Math.random() * 4);
+        player.hp -= danoInimigo;
+        addLog(`😖 ${inimigo.nome} causou ${danoInimigo} de dano. Seu HP: ${player.hp}/${totalMaxHp}`);
+
+        if (player.hp <= 0) {
+            // Morte do jogador
+            aplicarPenalidadeMorte();
+            inCombat = false;
+            if (isTestRank) {
+                isTestRank = false;
+                window.currentTestEnemy = null;
+            } else {
+                currentEnemyIndex = null;
+            }
+            regenerarVida();
+            document.getElementById('combatActions').classList.add('hidden');
+            document.getElementById('shadowRecruit').classList.add('hidden');
+            refreshUI();
+            return;
+        }
+        refreshUI();
+    }
+
+    function obterProximoRank(rank) {
+        const ranks = ['E','D','C','B','A','S'];
+        let idx = ranks.indexOf(rank);
+        if (idx >= 0 && idx < ranks.length-1) return ranks[idx+1];
+        return null;
+    }
+
+    function fugir() {
+        if (!inCombat) return;
+        aplicarPenalidadeFuga();
+        inCombat = false;
+        if (isTestRank) {
+            isTestRank = false;
+            window.currentTestEnemy = null;
+        } else {
+            currentEnemyIndex = null;
+        }
+        document.getElementById('combatActions').classList.add('hidden');
+        regenerarVida();
+        refreshUI();
+    }
+
+    function tentarSombra() {
+        if (recruitAttempts <= 0) return;
+        let inimigo = areas[currentArea].inimigos[currentEnemyIndex];
+        if (!inimigo || inimigo.vivo) return;
+
+        // Verificar limite de sombras
+        let maxShadow = Math.floor(totalMana / 20);
+        if (player.shadows.length >= maxShadow) {
+            addLog('Você atingiu o limite de sombras! Aumente sua Mana para invocar mais.');
+            document.getElementById('shadowRecruit').classList.add('hidden');
+            currentEnemyIndex = null;
+            refreshUI();
+            return;
+        }
+
+        let rankVal = { 'E':1, 'D':2, 'C':4, 'B':8, 'A':16, 'S':48 };
+        let playerRankVal = rankVal[player.rank] || 1;
+        let inimigoRankVal = rankVal[inimigo.rank] || 1;
+        let chance = 0.3 + (playerRankVal - inimigoRankVal) * 0.1;
+        chance = Math.min(0.9, Math.max(0.2, chance));
+
+        if (Math.random() < chance) {
+            let novaSombra = {
+                nome: inimigo.nome,
+                rank: inimigo.rank,
+                nivel: 1
+            };
+            player.shadows.push(novaSombra);
+            addLog(`✨ Sucesso! ${inimigo.nome} se tornou sua sombra.`);
+            document.getElementById('shadowRecruit').classList.add('hidden');
+            currentEnemyIndex = null;
+        } else {
+            recruitAttempts--;
+            addLog(`Falha ao tornar sombra. Tentativas restantes: ${recruitAttempts}`);
+            if (recruitAttempts <= 0) {
+                document.getElementById('shadowRecruit').classList.add('hidden');
+                currentEnemyIndex = null;
+            }
+        }
+        refreshUI();
+    }
+
+    function eliminar() {
+        addLog('Você eliminou a sombra.');
+        document.getElementById('shadowRecruit').classList.add('hidden');
+        currentEnemyIndex = null;
+        refreshUI();
+    }
+
+    // Função para iniciar teste de ranking
+    function iniciarTesteRank() {
+        if (inCombat) {
+            addLog('Você já está em combate!');
+            return;
+        }
+        let proximoRank = obterProximoRank(player.rank);
+        if (!proximoRank) {
+            addLog('Você já é Rank S, não pode testar mais.');
+            return;
+        }
+        // Gerar inimigo de teste (rank superior) usando multiplicadores
+        let rank = proximoRank;
+        let mult = rankMultiplier[rank];
+        let nome = `Guardião Rank ${rank}`;
+        let hp = 50 * mult;       // base 50 para E
+        let forca = 10 * mult;     // base 10 para E
+        let xp = 0; // não ganha xp no teste
+        let gem = 0;
+        let inimigoTeste = {
+            nome,
+            rank,
+            hp,
+            maxHp: hp,
+            forca,
+            xp,
+            gem,
+            vivo: true
+        };
+        window.currentTestEnemy = inimigoTeste;
+        isTestRank = true;
+        inCombat = true;
+        currentArea = null;
+        currentEnemyIndex = null;
+        document.getElementById('combatActions').classList.remove('hidden');
+        document.getElementById('shadowRecruit').classList.add('hidden');
+        addLog(`⚔️ Teste de Ranking: enfrente ${inimigoTeste.nome} (Rank ${rank}) para subir de nível!`);
+        refreshUI();
+    }
+
+    // Level up status
+    function addStat(stat) {
+        if (player.pontosStatus <= 0) return;
+        player.pontosStatus--;
+        if (stat === 'forca') player.base.forca += 2;
+        else if (stat === 'mana') player.base.mana += 1;
+        else if (stat === 'vida') { player.base.maxHp += 10; player.hp += 10; }
+        refreshUI();
+    }
+
+    // Inicialização e eventos
+    document.getElementById('btnSurgirInicial').addEventListener('click', () => {
+        document.getElementById('startScreen').classList.add('hidden');
+        document.getElementById('creationScreen').classList.remove('hidden');
+    });
+
+    document.getElementById('btnIniciarJogo').addEventListener('click', () => {
+        let nome = document.getElementById('playerName').value.trim();
+        if (nome === '') nome = 'Jin-Woo';
+        let genero = document.getElementById('playerGender').value;
+        player.name = nome;
+        player.gender = genero;
+        document.getElementById('creationScreen').classList.add('hidden');
+        document.getElementById('gameScreen').classList.remove('hidden');
+        addLog(`Bem-vindo, Caçador ${player.name}.`);
+
+        // Selecionar área inicial (campo)
+        currentArea = 'campo';
+        refreshUI();
+    });
+
+    // Seleção de área
+    document.querySelectorAll('.area-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            if (inCombat) { addLog('Termine o combate primeiro.'); return; }
+            document.querySelectorAll('.area-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            let area = card.dataset.area;
+            currentArea = area;
+            isTestRank = false;
+            window.currentTestEnemy = null;
+            refreshUI();
+        });
+    });
+
+    // BOTÕES DE COMBATE
+    document.getElementById('btnAtacar').addEventListener('click', atacar);
+    document.getElementById('btnFugir').addEventListener('click', fugir);
+    document.getElementById('btnTornarSombra').addEventListener('click', tentarSombra);
+    document.getElementById('btnEliminar').addEventListener('click', eliminar);
+
+    // LEVEL UP
+    document.getElementById('btnForca').addEventListener('click', () => addStat('forca'));
+    document.getElementById('btnMana').addEventListener('click', () => addStat('mana'));
+    document.getElementById('btnVida').addEventListener('click', () => addStat('vida'));
+
+    // BOTÃO SUBIR RANKING
+    document.getElementById('btnSubirRanking').addEventListener('click', iniciarTesteRank);
+
+    // Atualização periódica
+    setInterval(refreshUI, 200);
+
+    // Inicialmente, carregar stats vazios
+    refreshUI();
+})();
+</script>
+</body>
+</html>
