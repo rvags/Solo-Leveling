@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solo Leveling: Despertar das Sombras</title>
     <style>
+        /* (mesmo CSS anterior) */
         * {
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -144,7 +145,7 @@
             display: block;
             margin: 20px 0 10px;
         }
-        .creation-box input, .creation-box select {
+        .creation-box input {
             background: #2e1047;
             border: 2px solid #a155e0;
             color: white;
@@ -153,9 +154,6 @@
             border-radius: 40px;
             width: 80%;
             margin-bottom: 20px;
-        }
-        .creation-box select {
-            width: 50%;
         }
         .surgir-small {
             font-size: 2rem;
@@ -174,6 +172,7 @@
             border: 2px solid #b471ff;
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
         }
         #mapPanel h3 {
             text-align: center;
@@ -204,6 +203,15 @@
             background: #7b3fb0;
             border-color: #ffd966;
         }
+        .area-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(0.8);
+        }
+        .area-card.locked:hover {
+            background: #341d4e;
+            border-color: #9f6fe0;
+        }
         .area-name {
             font-size: 1.8rem;
             font-weight: bold;
@@ -211,13 +219,18 @@
         .area-desc {
             font-size: 1.2rem;
         }
+        .area-req {
+            font-size: 1rem;
+            color: #ffaa00;
+            margin-top: 5px;
+        }
         #enemyList {
-            margin-top: 15px;
             background: #221134;
             border-radius: 20px;
             padding: 10px;
-            max-height: 300px;
+            max-height: 150px;
             overflow-y: auto;
+            margin-top: 5px;
         }
         .enemy-entry {
             background: #442b63;
@@ -242,17 +255,41 @@
             flex-direction: column;
             gap: 10px;
         }
+        /* Painel de estatísticas */
         #playerStats {
             background: #221134;
             border-radius: 20px;
-            padding: 10px;
-            font-size: 1.1rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
+            padding: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .stat-item {
+            background: #2e154a;
+            border-radius: 12px;
+            padding: 8px 12px;
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #9f6fe0;
+        }
+        .stat-value {
+            font-weight: bold;
+            color: #ffd966;
+            font-size: 1.4rem;
+        }
+        #statGemas {
+            color: #ffaa00;
+            font-size: 1.6rem;
         }
         #xpBarContainer {
-            grid-column: span 2;
             background: #0d0321;
             border-radius: 20px;
             padding: 8px;
@@ -275,7 +312,7 @@
             background: #0d0321;
             border-radius: 20px;
             padding: 15px;
-            height: 200px;
+            height: 150px;
             overflow-y: auto;
             font-size: 1.2rem;
             border: 1px solid #b28aff;
@@ -314,12 +351,13 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            overflow-y: auto;
         }
         #shadowList {
             background: #1f0a33;
             border-radius: 20px;
             padding: 10px;
-            max-height: 200px;
+            max-height: 150px;
             overflow-y: auto;
         }
         .shadow-item {
@@ -355,12 +393,35 @@
         .btn-vender:hover {
             background: #b30000;
         }
-        #shopPanel {
+        .shop-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .shop-tab {
+            flex: 1;
+            background: #2d1545;
+            border: 2px solid #b471ff;
+            border-radius: 20px;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .shop-tab.active {
+            background: #7b3fb0;
+            border-color: #ffd966;
+        }
+        .shop-panel {
             background: #2d1545;
             border-radius: 20px;
             padding: 10px;
-            max-height: 300px;
+            max-height: 250px;
             overflow-y: auto;
+            display: none;
+        }
+        .shop-panel.active {
+            display: block;
         }
         .equip-slot {
             background: #1e0b2e;
@@ -382,13 +443,39 @@
             background: #2e154a;
             padding: 5px;
             border-radius: 8px;
+            margin-bottom: 5px;
         }
         .item-info {
             font-size: 0.9rem;
+            flex: 1;
         }
-        .btn-equip {
-            font-size: 1rem;
+        .btn-equip, .btn-contratar, .btn-comprar-pocao, .btn-comprar-gemas {
+            font-size: 0.9rem;
             padding: 4px 10px;
+            min-width: 100px;
+        }
+        #companionList {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .companion-item {
+            background: #1e0b2e;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .companion-info {
+            flex: 1;
+        }
+        .companion-name {
+            font-weight: bold;
+        }
+        .companion-details {
+            font-size: 0.8rem;
+            color: #aaffaa;
         }
         #gemsDisplay {
             font-size: 1.6rem;
@@ -397,9 +484,69 @@
         }
         #btnSubirRanking {
             width: 100%;
-            margin-bottom: 10px;
+            margin-top: 10px;
             background: #9b4dff;
             border-color: #ffcc66;
+        }
+        #btnLojaGemas {
+            width: 100%;
+            margin-bottom: 10px;
+            background: #ffaa00;
+            border-color: #ffd966;
+            color: #1a0b2e;
+        }
+        #potionStatus {
+            background: #1e0b2e;
+            border-radius: 20px;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ffaa00;
+        }
+        #potionButtons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+            margin-top: 5px;
+        }
+        .potion-btn {
+            background: #008b8b;
+            border: 1px solid #66ffff;
+            color: white;
+            font-size: 0.8rem;
+            padding: 4px 6px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .potion-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        #dungeonPrompt, #messagePrompt {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #2d1545;
+            border: 3px solid #ffd966;
+            border-radius: 30px;
+            padding: 30px;
+            text-align: center;
+            z-index: 100;
+            box-shadow: 0 0 50px #000;
+        }
+        #dungeonPrompt h2, #messagePrompt h2 {
+            margin-top: 0;
+            color: #ffd966;
+        }
+        #dungeonPrompt button, #messagePrompt button {
+            margin: 10px;
+            font-size: 2rem;
+        }
+        /* Estilo para o timer de validação */
+        #pixTimer {
+            color: #ffaa00;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -418,12 +565,7 @@
         <div class="creation-box">
             <h2>✨ DESPERTAR ✨</h2>
             <label>NOME DO CAÇADOR</label>
-            <input type="text" id="playerName" maxlength="20" placeholder="Ex: Jin-Woo">
-            <label>GÊNERO</label>
-            <select id="playerGender">
-                <option value="masculino">Masculino</option>
-                <option value="feminino">Feminino</option>
-            </select>
+            <input type="text" id="playerName" maxlength="20" placeholder="Digite seu nome">
             <button class="surgir-btn surgir-small" id="btnIniciarJogo">SURGIR</button>
         </div>
     </div>
@@ -432,39 +574,30 @@
     <div id="gameScreen" class="screen hidden">
         <!-- MAPA (esquerda) -->
         <div id="mapPanel">
-            <h3>🌍 MUNDO SOLO </h3>
-            <div class="area-list">
-                <div class="area-card" data-area="campo">
-                    <div class="area-name">🌾 CAMPO</div>
-                    <div class="area-desc">Rural, sombras rank E-D</div>
-                </div>
-                <div class="area-card" data-area="deserto">
-                    <div class="area-name">🏜️ DESERTO</div>
-                    <div class="area-desc">Árido, rank C-B</div>
-                </div>
-                <div class="area-card" data-area="castelo">
-                    <div class="area-name">🏰 CASTELO</div>
-                    <div class="area-desc">Fortaleza de Igris (Rank S)</div>
-                </div>
-            </div>
-            <div id="enemyList">
-                <div style="text-align:center;">Selecione uma área</div>
-            </div>
+            <h3>🏰 MASMORRAS</h3>
+            <div class="area-list" id="dungeonList"></div>
         </div>
 
         <!-- INFO CENTRAL -->
         <div id="infoPanel">
             <div id="playerStats">
-                <span id="statName">???</span>
-                <span id="statGender"></span>
-                <span>❤️VIDA: <span id="statHp">0</span>/<span id="statMaxHp">0</span></span>
-                <span>🔮MANA: <span id="statMana">0</span></span>
-                <span>⚔️FORÇA: <span id="statForca">0</span></span>
-                <span>📊RANK: <span id="statRank">E</span></span>
-                <span>💎GEMAS: <span id="statGemas">0</span></span>
-                <span>⬆️NÍVEL: <span id="statNivel">1</span></span>
-                <span>🔹PONTOS: <span id="statPontos">0</span></span>
-                <!-- Barra de XP -->
+                <div class="stat-row">
+                    <div class="stat-item">HP <span class="stat-value"><span id="statHp">0</span>/<span id="statMaxHp">0</span></span></div>
+                    <div class="stat-item">MP <span class="stat-value" id="statMana">0</span></div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-item">STR <span class="stat-value" id="statForca">0</span></div>
+                    <div class="stat-item">VIT <span class="stat-value" id="statVit">0</span></div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-item">PONTOS <span class="stat-value" id="statPontos">0</span></div>
+                    <div class="stat-item">GEMAS <span class="stat-value" id="statGemas">0</span></div>
+                </div>
+                <!-- Nova linha para o RANK -->
+                <div class="stat-row">
+                    <div class="stat-item">RANK <span class="stat-value" id="statRank">E</span></div>
+                    <div class="stat-item"></div> <!-- vazio para manter duas colunas -->
+                </div>
                 <div id="xpBarContainer">
                     <div id="xpBarLabel">
                         <span>XP</span>
@@ -473,9 +606,8 @@
                     <div id="xpBarFill" style="width:0%"></div>
                 </div>
             </div>
-            <div id="logArea">
-                [Sistema] Bem-vindo ao jogo. Escolha uma área.
-            </div>
+            <div id="logArea">[Sistema] Bem-vindo ao jogo. Escolha uma masmorra.</div>
+            <div id="enemyList"><div style="text-align:center;">Selecione uma masmorra</div></div>
             <div id="combatActions" class="hidden">
                 <button class="btn" id="btnAtacar">⚔️ Atacar</button>
                 <button class="btn" id="btnFugir">🏃 Fugir</button>
@@ -489,23 +621,117 @@
                 <button class="btn" id="btnMana">+Mana</button>
                 <button class="btn" id="btnVida">+Vida</button>
             </div>
+            <div id="companionStatus" class="hidden">
+                <h4>👥 COMPANHEIROS NA MASMORRA</h4>
+                <div id="activeCompanions"></div>
+            </div>
+            <!-- Status da poção -->
+            <div id="potionStatus" class="hidden">
+                <span>Poções:</span>
+                <div id="potionButtons"></div>
+            </div>
         </div>
 
-        <!-- PAINEL DIREITO (sombras, loja, gems) -->
+        <!-- PAINEL DIREITO -->
         <div id="rightPanel">
-            <button id="btnSubirRanking" class="btn">⬆️ SUBIR RANKING</button>
+            <!-- Botão Loja de Gemas -->
+            <button id="btnLojaGemas" class="btn">💎 LOJA DE GEMAS</button>
+            
             <div id="gemsDisplay">💎 0</div>
+            
             <div>
-                <h4>🛡️ EQUIPAMENTOS</h4>
-                <div id="shopPanel">
-                    <!-- Será preenchido dinamicamente -->
+                <div class="shop-tabs">
+                    <div class="shop-tab active" data-shop="equip">🛡️ Equip.</div>
+                    <div class="shop-tab" data-shop="companion">👥 Cias.</div>
+                    <div class="shop-tab" data-shop="potion">🧪 Poções</div>
+                    <div class="shop-tab" data-shop="gemshop">💎 Gemas</div>
+                </div>
+                
+                <div id="shopEquip" class="shop-panel active">
+                    <div id="shopPanel"></div>
+                </div>
+                
+                <div id="shopCompanion" class="shop-panel">
+                    <h4>📜 CONTRATAR COMPANHEIROS</h4>
+                    <div id="companionShopList"></div>
+                    <div id="companionList"></div>
+                </div>
+                
+                <div id="shopPotion" class="shop-panel">
+                    <h4>🧪 POÇÕES DE VIDA</h4>
+                    <div class="item-row">
+                        <span class="item-info">Poção Pequena (cura 10%)</span>
+                        <button class="btn-comprar-pocao" data-tipo="10">Comprar (💎1000)</button>
+                    </div>
+                    <div class="item-row">
+                        <span class="item-info">Poção Média (cura 25%)</span>
+                        <button class="btn-comprar-pocao" data-tipo="25">Comprar (💎2500)</button>
+                    </div>
+                    <div class="item-row">
+                        <span class="item-info">Poção Grande (cura 50%)</span>
+                        <button class="btn-comprar-pocao" data-tipo="50">Comprar (💎5000)</button>
+                    </div>
+                    <div class="item-row">
+                        <span class="item-info">Poção Superior (cura 75%)</span>
+                        <button class="btn-comprar-pocao" data-tipo="75">Comprar (💎7500)</button>
+                    </div>
+                    <div class="item-row">
+                        <span class="item-info">Poção Total (cura 100%)</span>
+                        <button class="btn-comprar-pocao" data-tipo="100">Comprar (💎10000)</button>
+                    </div>
+                </div>
+
+                <!-- Aba: Loja de Gemas -->
+                <div id="shopGems" class="shop-panel">
+                    <h4>💎 COMPRAR GEMAS</h4>
+                    <div class="item-row">
+                        <span class="item-info">100 Gemas</span>
+                        <button class="btn-comprar-gemas" data-gemas="100" data-preco="1">R$ 1,00</button>
+                    </div>
+                    <div class="item-row">
+                        <span class="item-info">500 Gemas</span>
+                        <button class="btn-comprar-gemas" data-gemas="500" data-preco="5">R$ 5,00</button>
+                    </div>
+                    <div class="item-row">
+                        <span class="item-info">1200 Gemas</span>
+                        <button class="btn-comprar-gemas" data-gemas="1200" data-preco="10">R$ 10,00</button>
+                    </div>
+                    <div class="item-row">
+                        <span class="item-info">2500 Gemas</span>
+                        <button class="btn-comprar-gemas" data-gemas="2500" data-preco="20">R$ 20,00</button>
+                    </div>
+                    <div class="item-row">
+                        <span class="item-info">6500 Gemas</span>
+                        <button class="btn-comprar-gemas" data-gemas="6500" data-preco="50">R$ 50,00</button>
+                    </div>
+                    <div class="item-row">
+                        <span class="item-info">14000 Gemas</span>
+                        <button class="btn-comprar-gemas" data-gemas="14000" data-preco="100">R$ 100,00</button>
+                    </div>
                 </div>
             </div>
+            
             <div>
                 <h4>👥 SOMBRAS (<span id="shadowCount">0</span>/<span id="maxShadow">0</span>)</h4>
                 <div id="shadowList"></div>
             </div>
+
+            <!-- Botão SUBIR RANKING na parte inferior -->
+            <button id="btnSubirRanking" class="btn">⬆️ SUBIR RANKING</button>
         </div>
+    </div>
+    <!-- Diálogo de confirmação de masmorra -->
+    <div id="dungeonPrompt" class="hidden">
+        <h2 id="promptDungeonName"></h2>
+        <p>Iniciar esta masmorra?</p>
+        <button class="btn" id="promptConfirm">⚔️ SURGIR</button>
+        <button class="btn" id="promptCancel">❌ Ainda não</button>
+    </div>
+    <!-- Diálogo de mensagens (vitória/morte) -->
+    <div id="messagePrompt" class="hidden">
+        <h2 id="messageTitle"></h2>
+        <p id="messageText"></p>
+        <button class="btn" id="messageOk">OK</button>
     </div>
 </div>
 
@@ -521,96 +747,404 @@
             { id: 'capacete_betinha', nome: 'Capacete Betinha RANK(C)', hp: 230, preco: 160 },
             { id: 'capacete_de_ferro', nome: 'Capacete de Ferro RANK(B)', hp: 500, preco: 410 },
             { id: 'capacete_de_ouro', nome: 'Capacete de Ouro RANK(A)', hp: 750, preco: 820 },
-            { id: 'coroa_das_sombras', nome: 'Coroa das Sombras RANK(S)', hp: 2000, preco: 1700 }
+            { id: 'coroa_das_sombras', nome: 'Coroa das Sombras RANK(S)', mana: 80, preco: 6700 }
         ],
         maoD: [
             { id: 'adaga', nome: 'Adaga RANK(E)', forca: 7, preco: 5 },
             { id: 'espada_curta', nome: 'Espada Curta RANK(D)', forca: 20, preco: 35 },
             { id: 'espada_longa', nome: 'Espada Longa RANK(D)', forca: 50, preco: 70 },
-            { id: 'cajado', nome: 'Cajado RANK(C)', mana: 90, preco: 130 },
+            { id: 'cajado', nome: 'Cajado RANK(S)', mana: 80, preco: 7030 },
             { id: 'lança', nome: 'Lança RANK(C)', forca: 130, preco: 240 },
-            { id: 'maca_de_espinhos', nome: 'Maçã de Espinhos RANK(B)', forca: 260, preco: 350 },
+            { id: 'maca_de_espinhos', nome: 'Maçã de Espinhos RANK(B)', forca: 260, preco: 550 },
             { id: 'espada_de_sombras', nome: 'Espada de Sombras RANK(A)', forca: 670, preco: 700 },
-            { id: 'foice_da_morte', nome: 'Foice da Morte RANK(S)', forca: 2000, preco: 2500 }
+            { id: 'foice_da_morte', nome: 'Foice da Morte RANK(S)', forca: 5000, preco: 2500 }
         ],
         maoE: [
-            { id: 'escudo_madeira', nome: 'Escudo de Madeira', hp: 8, preco: 12 },
-            { id: 'luva_sombra', nome: 'Luva de Sombra', mana: 5, preco: 18 }
+            { id: 'escudo_madeira', nome: 'Escudo de Madeira RANK(E)', hp: 8, preco: 24 },
+            { id: 'luva_sombra', nome: 'Luva de Sombra(S+)', mana: 120, preco: 12018 },
+            { id: 'amuleto', nome: 'Amuleto RANK(C)', mana: 12, preco: 528 },
+            { id: 'escudo_espinho', nome: 'Escudo de Espinho RANK(B)', hp: 126, forca:239, preco: 522 },
+            { id: 'escudo_pedra', nome: 'Escudo de Pedra RANK(D)', hp: 120, preco: 202 },
+            { id: 'escudo_ferro', nome: 'Escudo de Ferro RANK(A)', hp: 760, preco: 800 },
+            { id: 'escudo_ouro', nome: 'Escudo de Ouro RANK(A)', hp: 600, preco: 860},
         ],
         tronco: [
-            { id: 'armadura_couro', nome: 'Armadura de Couro', hp: 10, preco: 20 },
-            { id: 'peitoral_aco', nome: 'Peitoral de Aço', hp: 20, forca: 1, preco: 30 }
+            { id: 'armadura_couro', nome: 'Armadura de Couro RANK(E)', hp: 10, preco: 20 },
+            { id: 'peitoral_aco', nome: 'Peitoral de Aço RANK(S)', hp: 2000, preco: 1570 },
+            { id: 'peitoral_espinho', nome: 'Peitoral de Espinho RANK(B)', hp: 386, forca: 340, preco: 640 },
+            { id: 'tunica', nome: 'Tunica RANK(B)', mana: 40, preco: 1030 },
+            { id: 'cota_malha', nome: 'Cota de Malha RANK(D)', hp: 58, forca: 20, preco: 170 },
+            { id: 'peitoral_brigantina', nome: 'Peitoral de Brigantina RANK(C)', hp: 400, preco: 320 },
+            { id: 'peitoral_ferro', nome: 'Peitoral de Ferro RANK(A)', hp: 858, preco: 900 }
         ],
         pernas: [
-            { id: 'grevas_couro', nome: 'Grevas de Couro', hp: 5, preco: 15 },
-            { id: 'calca_tecido', nome: 'Calça de Tecido', mana: 5, preco: 10 }
+            { id: 'grevas_couro', nome: 'Grevas de Couro RANK(D)', hp: 47, preco: 65 },
+            { id: 'calca_tecido', nome: 'Calça de Tecido RANK(E)', hp: 3, preco: 5 },
+            { id: 'chausses_cota_de_malha', nome: 'Chausses de Cota de Malha RANK(C)', hp: 139, preco: 130 },
+            { id: 'grevas_aco', nome: 'Grevas de Placa de Aço RANK(B)', hp: 373, preco: 420 },
+            { id: 'armadura_placas', nome: 'Armadura de Placas RANK(A)', hp: 720, preco: 765 },
+            { id: 'grevas_monarca', nome: 'Grevas do Monarca RANK(S)', mana: 60, preco: 3000 }
         ]
     };
 
-    // Bônus por rank de sombra (PG razão 2)
-    function getBonusPorRank(rank) {
-        switch(rank) {
-            case 'E': return { forca: 10, hp: 50 };
-            case 'D': return { forca: 30, hp: 100 };
-            case 'C': return { forca: 50, hp: 250 };
-            case 'B': return { forca: 70, hp: 400 };
-            case 'A': return { forca: 160, hp: 800 };
-            case 'S': return { forca: 480, hp: 2400 }; // 3x o A (16*3)
-            default: return { forca: 0, hp: 0 };
-        }
-    }
+    // ---------- CATÁLOGO DE COMPANHEIROS ----------
+    const companionCatalog = [
+        // Rank E
+        { id: 'han_songyi_e', nome: 'Han Song-Yi', rank: 'E', classe: 'Mage', preco: 30,
+          desc: 'Estudante rank-E, sonha ser hunter mas é inexperiente',
+          forca: 5, mana: 15, hp: 50 },
+        { id: 'yoo_jinho_base', nome: 'Yoo Jinho (Base)', rank: 'E', classe: 'Tanker', preco: 35,
+          desc: 'Herdeiro da Yoojin Construction, leal mas sem experiência',
+          forca: 8, mana: 5, hp: 80 },
+        
+        // Rank D
+        { id: 'ju_hee', nome: 'Ju-Hee', rank: 'D', classe: 'Healer', preco: 60,
+          desc: 'Healer B-rank que se aposentou após trauma',
+          forca: 2, mana: 25, hp: 40 },
+        { id: 'song_chi_yul', nome: 'Song Chi-Yul', rank: 'D', classe: 'Mage', preco: 70,
+          desc: 'Professor de kumdo, perdeu o braço no Double Dungeon',
+          forca: 10, mana: 20, hp: 70 },
+        { id: 'yoo_jinho_armor', nome: 'Yoo Jinho (Armadura Lendária)', rank: 'D', classe: 'Tanker', preco: 85,
+          desc: 'Equipado com armadura cara, mais resistente',
+          forca: 15, mana: 8, hp: 150 },
+        
+        // Rank C
+        { id: 'hwang_dongsuk', nome: 'Hwang Dongsuk', rank: 'C', classe: 'Tanker', preco: 120,
+          desc: 'Líder de esquadrão, cruel e interesseiro',
+          forca: 25, mana: 5, hp: 200 },
+        { id: 'park_beom_shik', nome: 'Park Beom-Shik', rank: 'C', classe: 'Fighter', preco: 110,
+          desc: 'Mercenário que busca dinheiro fácil',
+          forca: 30, mana: 5, hp: 150 },
+        { id: 'cho_kyu_hwan', nome: 'Cho Kyu-Hwan', rank: 'C', classe: 'Mage', preco: 100,
+          desc: 'Mago do esquadrão de Dongsuk',
+          forca: 10, mana: 35, hp: 80 },
+        
+        // Rank B
+        { id: 'kang_taeshik', nome: 'Kang Taeshik', rank: 'B', classe: 'Assassin', preco: 200,
+          desc: 'Agente corrupto que matava criminosos, cruel',
+          forca: 45, mana: 10, hp: 180 },
+        { id: 'kim_chul', nome: 'Kim Chul', rank: 'B', classe: 'Tanker', preco: 190,
+          desc: 'Tank da White Tiger, confiante mas arrogante',
+          forca: 30, mana: 5, hp: 300 },
+        { id: 'park_heejin', nome: 'Park Heejin', rank: 'B', classe: 'Mage', preco: 180,
+          desc: 'Maga com instintos de sobrevivência aguçados',
+          forca: 15, mana: 40, hp: 120 },
+        { id: 'han_songyi_b', nome: 'Han Song-Yi (Treinada)', rank: 'B', classe: 'Mage', preco: 170,
+          desc: 'Versão mais experiente após incidentes',
+          forca: 15, mana: 35, hp: 100 },
+        
+        // Rank A
+        { id: 'woo_jinchul', nome: 'Woo Jinchul', rank: 'A', classe: 'Tanker', preco: 350,
+          desc: 'Inspetor da Associação, força quase S-rank',
+          forca: 50, mana: 15, hp: 350 },
+        { id: 'kim_chul_a', nome: 'Kim Chul (A-rank)', rank: 'A', classe: 'Tanker', preco: 320,
+          desc: 'Versão mais forte, estrela da White Tiger',
+          forca: 60, mana: 8, hp: 450 },
+        { id: 'yoo_soohyun', nome: 'Yoo Soohyun', rank: 'A', classe: 'Mage', preco: 300,
+          desc: 'Maga de alto nível, irmã de Jinho',
+          forca: 20, mana: 60, hp: 150 },
+        
+        // Rank S
+        { id: 'cha_hae_in', nome: 'Cha Hae-In', rank: 'S', classe: 'Fighter', preco: 800,
+          desc: 'Vice-mestra da Hunters Guild, força excepcional',
+          forca: 120, mana: 40, hp: 500 },
+        { id: 'choi_jong_in', nome: 'Choi Jong-In', rank: 'S', classe: 'Mage', preco: 750,
+          desc: 'Mestre da Hunters Guild, "O Hunter Supremo"',
+          forca: 30, mana: 120, hp: 300 },
+        { id: 'baek_yoonho', nome: 'Baek Yoonho', rank: 'S', classe: 'Tanker', preco: 780,
+          desc: 'Mestre da White Tiger, pode se transformar',
+          forca: 100, mana: 20, hp: 600 },
+        { id: 'hwang_dongsoo', nome: 'Hwang Dong-Su', rank: 'S', classe: 'Fighter', preco: 820,
+          desc: 'Hunter S que traiu a Coreia, extremamente forte',
+          forca: 130, mana: 25, hp: 550 },
+        { id: 'go_gunhee', nome: 'Go Gunhee', rank: 'S', classe: 'Mage', preco: 700,
+          desc: 'Presidente da Associação, poder dos Rulers',
+          forca: 40, mana: 100, hp: 250 },
+        
+        // Rank S+ (National Level)
+        { id: 'sung_jinwoo', nome: 'Sung Jinwoo (Monarca)', rank: 'S+', classe: 'Fighter', preco: 2000,
+          desc: 'O Monarca das Sombras, poder absoluto',
+          forca: 300, mana: 200, hp: 1200 },
+        { id: 'thomas_andre', nome: 'Thomas Andre', rank: 'S+', classe: 'Tanker', preco: 1800,
+          desc: 'National Level Hunter #1, "Golias"',
+          forca: 250, mana: 50, hp: 1500 },
+        { id: 'liu_zhigang', nome: 'Liu Zhigang', rank: 'S+', classe: 'Fighter', preco: 1750,
+          desc: 'National Level Hunter #2, mais forte da China',
+          forca: 280, mana: 60, hp: 1100 },
+        { id: 'christopher_reed', nome: 'Christopher Reed', rank: 'S+', classe: 'Mage', preco: 1700,
+          desc: 'National Level Hunter #3, poder mágico imenso',
+          forca: 50, mana: 250, hp: 800 }
+    ];
 
-    // Preço de venda das sombras por rank (também em PG)
-    function getPrecoVenda(rank) {
-        switch(rank) {
-            case 'E': return 10;
-            case 'D': return 20;
-            case 'C': return 40;
-            case 'B': return 80;
-            case 'A': return 160;
-            case 'S': return 480; // 3x o A
-            default: return 0;
-        }
-    }
+    // Bônus base por rank de sombra (valor por nível)
+    const shadowBaseBonus = {
+        'E': { forca: 5, hp: 25 },
+        'D': { forca: 10, hp: 50 },
+        'C': { forca: 20, hp: 100 },
+        'B': { forca: 40, hp: 200 },
+        'A': { forca: 80, hp: 400 },
+        'S': { forca: 160, hp: 800 },
+        'S+': { forca: 320, hp: 1600 }
+    };
+
+    // Preço base de venda das sombras
+    const shadowBasePrice = {
+        'E': 10,
+        'D': 30,
+        'C': 90,
+        'B': 270,
+        'A': 810,
+        'S': 2430,
+        'S+': 7290
+    };
 
     // ---------- ESTADO GLOBAL ----------
     let player = {
         name: '',
-        gender: 'masculino',
         level: 1,
         xp: 0,
         xpNext: 100,
         rank: 'E',
-        gems: 50, // começa com 50 para testes
+        gems: 50,
         base: {
             forca: 10,
-            mana: 20,
+            mana: 0,
             maxHp: 100
         },
-        hp: 100, // atual
-        shadows: [], // sombras recrutadas {nome, rank, nivel}
-        equipment: { // guarda o id do item equipado (ou null)
+        hp: 100,
+        shadows: [],
+        equipment: {
             cabeca: null,
             maoD: null,
             maoE: null,
             tronco: null,
             pernas: null
         },
-        inventario: [], // lista de ids de itens que o jogador possui
-        pontosStatus: 0
+        inventario: [],
+        pontosStatus: 0,
+        companions: [],
+        currentDungeonRank: null,
+        potions: { '10': 0, '25': 0, '50': 0, '75': 0, '100': 0 }
     };
 
-    // Totais calculados (base + equipamentos + sombras)
+    // Totais calculados
     let totalForca = player.base.forca;
     let totalMana = player.base.mana;
     let totalMaxHp = player.base.maxHp;
+
+    // Multiplicadores de rank (base 5, exponencial)
+    const rankMultiplier = {
+        'E': 1,
+        'D': 5,
+        'C': 25,
+        'B': 125,
+        'A': 625,
+        'S': 3125,
+        'S+': 15625
+    };
+
+    // Variável para controlar se a masmorra atual foi completada
+    let dungeonComplete = false;
+
+    // ---------- MASMORRAS (igual ao anterior) ----------
+    const dungeons = [
+        {
+            nome: '🌾 Planície dos Goblins',
+            bossRank: 'E',
+            mobs: [
+                { nome: 'Goblin Rasteiro', rank: 'E' },
+                { nome: 'Goblin Guerreiro', rank: 'E' }
+            ],
+            boss: { nome: 'Chefe Goblin', rank: 'E' }
+        },
+        {
+            nome: '🐍 Caverna de Kasaka',
+            bossRank: 'D',
+            mobs: [
+                { nome: 'Cobra Venenosa', rank: 'E' },
+                { nome: 'Cobra Gigante', rank: 'E' }
+            ],
+            boss: { nome: 'Kasaka', rank: 'D' }
+        },
+        {
+            nome: '🌲 Floresta dos Licantropos',
+            bossRank: 'C',
+            mobs: [
+                { nome: 'Lobo Sombrio', rank: 'D' },
+                { nome: 'Esqueleto Guerreiro', rank: 'D' },
+                { nome: 'Aranha Gigante', rank: 'D' }
+            ],
+            boss: { nome: 'Licantropo Alfa', rank: 'C' }
+        },
+        {
+            nome: '❄️ Tundra de Gel',
+            bossRank: 'B',
+            mobs: [
+                { nome: 'Urso de Gelo Filhote', rank: 'C' },
+                { nome: 'Centopéia de Gelo', rank: 'C' },
+                { nome: 'Yeti', rank: 'C' }
+            ],
+            boss: { nome: 'Urso de Gelo Ancestral', rank: 'B' }
+        },
+        {
+            nome: '🔥 Fortaleza do Vulcão',
+            bossRank: 'A',
+            mobs: [
+                { nome: 'Orc Vermelho', rank: 'B' },
+                { nome: 'Mago Orc', rank: 'B' },
+                { nome: 'Golem de Lava', rank: 'B' }
+            ],
+            boss: { nome: 'Vulcan', rank: 'A' }
+        },
+        {
+            nome: '🏰 Castelo de Igris',
+            bossRank: 'S',
+            mobs: [
+                { nome: 'Cavaleiro Negro', rank: 'A' },
+                { nome: 'Cavaleiro de Elite', rank: 'A' },
+                { nome: 'Feiticeiro das Sombras', rank: 'A' },
+                { nome: 'Guerreiro Esqueleto', rank: 'A' }
+            ],
+            boss: { nome: 'Igris', rank: 'S' }
+        },
+        {
+            nome: '👑 Trono de Kamish',
+            bossRank: 'S+',
+            mobs: [
+                { nome: 'Beru', rank: 'S' },
+                { nome: 'Bellion', rank: 'S' },
+                { nome: 'Comandante das Sombras', rank: 'S' }
+            ],
+            boss: { nome: 'Kamish, o Destruidor', rank: 'S+' }
+        },
+        // Novas masmorras
+        {
+            nome: '🕷️ Toca da Aranha Gigante',
+            bossRank: 'C',
+            mobs: [
+                { nome: 'Aranha Pequena', rank: 'E' },
+                { nome: 'Aranha Venenosa', rank: 'D' }
+            ],
+            boss: { nome: 'Rainha Aranha', rank: 'C' }
+        },
+        {
+            nome: '⚰️ Cripta do Cavaleiro da Morte',
+            bossRank: 'A',
+            mobs: [
+                { nome: 'Esqueleto Guerreiro', rank: 'B' },
+                { nome: 'Cavaleiro Espectral', rank: 'B' },
+                { nome: 'Lich Menor', rank: 'B' }
+            ],
+            boss: { nome: 'Cavaleiro da Morte', rank: 'A' }
+        },
+        {
+            nome: '🏔️ Pico do Dragão de Gelo',
+            bossRank: 'S',
+            mobs: [
+                { nome: 'Draconiano', rank: 'A' },
+                { nome: 'Elemental de Gelo', rank: 'A' },
+                { nome: 'Gigante de Gelo', rank: 'A' }
+            ],
+            boss: { nome: 'Dragão de Gelo', rank: 'S' }
+        },
+        {
+            nome: '🌋 Cratera do Titã',
+            bossRank: 'B',
+            mobs: [
+                { nome: 'Elemental de Fogo', rank: 'C' },
+                { nome: 'Golem de Rocha', rank: 'C' },
+                { nome: 'Salamandra', rank: 'C' }
+            ],
+            boss: { nome: 'Titã de Pedra', rank: 'B' }
+        },
+        {
+            nome: '🌑 Templo das Sombras',
+            bossRank: 'S+',
+            mobs: [
+                { nome: 'Sombra Espectral', rank: 'S' },
+                { nome: 'Cavaleiro Sombrio', rank: 'S' }
+            ],
+            boss: { nome: 'Monarca das Sombras', rank: 'S+' }
+        }
+    ];
+
+    function gerarInimigosDungeon(dungeonIdx) {
+        let dungeon = dungeons[dungeonIdx];
+        let lista = [];
+        let bossMult = rankMultiplier[dungeon.bossRank];
+        
+        dungeon.mobs.forEach((mob, i) => {
+            let mult = rankMultiplier[mob.rank];
+            let hp = 30 * mult * (1 + i * 0.1);
+            let forca = 5 * mult * (1 + i * 0.1);
+            let xp = 20 * mult;
+            let gem = 5 * mult;
+            lista.push({
+                nome: mob.nome,
+                rank: mob.rank,
+                hp: Math.floor(hp),
+                maxHp: Math.floor(hp),
+                forca: Math.floor(forca),
+                xp: Math.floor(xp),
+                gem: Math.floor(gem),
+                vivo: true,
+                isBoss: false
+            });
+        });
+        
+        let bossHp = 30 * bossMult * 1.5;
+        let bossForca = 5 * bossMult * 1.5;
+        let bossXp = 20 * bossMult * 1.5;
+        let bossGem = 5 * bossMult * 1.5;
+        lista.push({
+            nome: dungeon.boss.nome,
+            rank: dungeon.boss.rank,
+            hp: Math.floor(bossHp),
+            maxHp: Math.floor(bossHp),
+            forca: Math.floor(bossForca),
+            xp: Math.floor(bossXp),
+            gem: Math.floor(bossGem),
+            vivo: true,
+            isBoss: true
+        });
+        
+        return lista;
+    }
+
+    let dungeonInstances = dungeons.map((d, idx) => ({
+        nome: d.nome,
+        rank: d.bossRank,
+        inimigos: gerarInimigosDungeon(idx)
+    }));
+
+    function getShadowBonus(shadow) {
+        let base = shadowBaseBonus[shadow.rank] || { forca: 0, hp: 0 };
+        return {
+            forca: base.forca * shadow.level,
+            hp: base.hp * shadow.level
+        };
+    }
+
+    function darXPSombras(xpGanho) {
+        if (player.shadows.length === 0) return;
+        let xpPorSombra = Math.floor(xpGanho / player.shadows.length);
+        if (xpPorSombra < 1) xpPorSombra = 1;
+        
+        player.shadows.forEach(shadow => {
+            shadow.xp += xpPorSombra;
+            while (shadow.xp >= shadow.xpNext) {
+                shadow.level++;
+                shadow.xp -= shadow.xpNext;
+                shadow.xpNext = Math.floor(shadow.xpNext * 1.5);
+            }
+        });
+    }
 
     function recalcularTotais() {
         totalForca = player.base.forca;
         totalMana = player.base.mana;
         totalMaxHp = player.base.maxHp;
 
-        // Equipamentos
         for (let slot in player.equipment) {
             let itemId = player.equipment[slot];
             if (itemId) {
@@ -623,12 +1157,19 @@
             }
         }
 
-        // Sombras ativas (todas contam, respeitando limite)
         player.shadows.forEach(s => {
-            let bonus = getBonusPorRank(s.rank);
+            let bonus = getShadowBonus(s);
             totalForca += bonus.forca;
             totalMaxHp += bonus.hp;
         });
+
+        if (player.companions.length > 0 && player.currentDungeonRank) {
+            player.companions.forEach(c => {
+                totalForca += c.forca || 0;
+                totalMana += c.mana || 0;
+                totalMaxHp += c.hp || 0;
+            });
+        }
 
         if (player.hp > totalMaxHp) player.hp = totalMaxHp;
     }
@@ -637,81 +1178,28 @@
         return itemCatalog[slot].find(i => i.id === id);
     }
 
-    // Multiplicadores de atributos por rank (PG razão 2, A->S 3x)
-    const rankMultiplier = {
-        'E': 1,
-        'D': 2,
-        'C': 4,
-        'B': 8,
-        'A': 16,
-        'S': 48   // 16 * 3
-    };
-
-    // Função para gerar inimigos com progressão geométrica
-    function gerarInimigos(area, quantidade) {
-        let lista = [];
-        for (let i = 0; i < quantidade; i++) {
-            let rank;
-            if (area === 'campo') rank = Math.random() < 0.7 ? 'E' : 'D';
-            else if (area === 'deserto') rank = ['C','B'][Math.floor(Math.random()*2)];
-            else { // castelo
-                if (i === 0) rank = 'S'; // Igris
-                else rank = Math.random() < 0.6 ? 'A' : 'B';
-            }
-            let mult = rankMultiplier[rank];
-            let nome = `${rank} · Sombra ${i+1}`;
-            if (rank === 'S') nome = '⚔️ IGRIS (S)';
-            let hp = 30 * mult;        // base 30 para E
-            let forca = 5 * mult;       // base 5 para E
-            let xp = 20 * mult;         // base 20 para E
-            let gem = 5 * mult;          // base 5 para E
-            lista.push({
-                nome,
-                rank,
-                hp,
-                maxHp: hp,
-                forca,
-                xp,
-                gem,
-                vivo: true
-            });
-        }
-        return lista;
-    }
-
-    // Mapa: 3 áreas com 30 sombras totais (distribuídas)
-    const areas = {
-        campo: {
-            nome: '🌾 Campo',
-            inimigos: gerarInimigos('campo', 12)
-        },
-        deserto: {
-            nome: '🏜️ Deserto',
-            inimigos: gerarInimigos('deserto', 12)
-        },
-        castelo: {
-            nome: '🏰 Castelo',
-            inimigos: gerarInimigos('castelo', 6)
-        }
-    };
-
-    // Função para verificar se todos os inimigos de uma área estão mortos e regenerá-los
-    function regenerarAreaSeNecessario(areaNome) {
-        let area = areas[areaNome];
-        if (!area) return;
-        let todosMortos = area.inimigos.every(inimigo => !inimigo.vivo);
+    function regenerarDungeonSeNecessario(dungeonIdx) {
+        let dungeon = dungeonInstances[dungeonIdx];
+        if (!dungeon) return;
+        let todosMortos = dungeon.inimigos.every(inimigo => !inimigo.vivo);
         if (todosMortos) {
-            area.inimigos = gerarInimigos(areaNome, area.inimigos.length);
-            addLog(`🌀 A área ${area.nome} foi regenerada com novas sombras!`);
+            player.hp = totalMaxHp;
+            addLog('✨ Bom trabalho! Você completou a masmorra!');
+            showMessage('Vitória!', 'Você completou a masmorra com sucesso!');
+            dungeonComplete = true;
+            currentDungeonIdx = null;
+            player.currentDungeonRank = null;
+            player.companions = [];
+            document.getElementById('companionStatus').classList.add('hidden');
+            document.getElementById('potionStatus').classList.add('hidden');
         }
     }
 
-    // Estado de combate
-    let currentArea = null;
-    let currentEnemyIndex = null; // para inimigos de área
+    let currentDungeonIdx = null;
+    let currentEnemyIndex = null;
     let inCombat = false;
     let recruitAttempts = 0;
-    let isTestRank = false; // se true, o inimigo atual é do teste de ranking
+    let isTestRank = false;
 
     function addLog(msg) {
         let log = document.getElementById('logArea');
@@ -719,106 +1207,238 @@
         log.scrollTop = log.scrollHeight;
     }
 
-    // Regenerar vida após combate
-    function regenerarVida() {
-        player.hp = totalMaxHp;
-    }
-
-    // Função para aplicar penalidade de morte: perde todas as gemas e TODOS os itens (inventário inteiro)
     function aplicarPenalidadeMorte() {
         player.gems = 0;
-        // Remove todos os itens do inventário
         player.inventario = [];
-        // Remove todos os equipamentos
         for (let slot in player.equipment) {
             player.equipment[slot] = null;
         }
+        player.companions = [];
+        player.currentDungeonRank = null;
         addLog('💔 Você morreu! Perdeu todas as gemas e todos os itens.');
+        showMessage('Derrota', 'Você morreu! Todos os itens e gemas foram perdidos.');
     }
 
-    // Função para aplicar penalidade de fuga: perde 20% das gemas atuais (mínimo 1)
     function aplicarPenalidadeFuga() {
         let perda = Math.max(1, Math.floor(player.gems * 0.2));
         player.gems = Math.max(0, player.gems - perda);
-        addLog(`🏃 Você fugiu! Perdeu ${perda} gemas.`);
+        player.companions = [];
+        player.currentDungeonRank = null;
+        addLog(`🏃 Você fugiu! Perdeu ${perda} gemas e seus companheiros.`);
     }
 
-    // Função para vender uma sombra
-    function venderSombra(index) {
+    function contratarCompanheiro(companionId) {
         if (inCombat) {
-            addLog('Não pode vender sombras durante combate.');
+            addLog('Não pode contratar durante combate.');
             return;
         }
-        if (index < 0 || index >= player.shadows.length) return;
-        let sombra = player.shadows[index];
-        let preco = getPrecoVenda(sombra.rank);
-        player.gems += preco;
-        player.shadows.splice(index, 1);
-        addLog(`💰 Você vendeu ${sombra.nome} por ${preco} gemas.`);
+        
+        let companion = companionCatalog.find(c => c.id === companionId);
+        if (!companion) return;
+        
+        if (player.companions.length >= 5) {
+            addLog('Limite de 5 companheiros por masmorra atingido!');
+            return;
+        }
+        
+        if (player.gems < companion.preco) {
+            addLog('Gemas insuficientes!');
+            return;
+        }
+        
+        player.gems -= companion.preco;
+        player.companions.push({ ...companion });
+        addLog(`✅ Contratou ${companion.nome} (${companion.rank}) para esta masmorra.`);
         refreshUI();
     }
 
-    // Função para atualizar toda a interface
-    function refreshUI() {
-        recalcularTotais();
+    function comprarPocao(tipo) {
+        if (inCombat) {
+            addLog('Não pode comprar durante combate.');
+            return;
+        }
+        let preco = parseInt(tipo) === 10 ? 1000 : parseInt(tipo) === 25 ? 2500 : parseInt(tipo) === 50 ? 5000 : parseInt(tipo) === 75 ? 7500 : 10000;
+        if (player.gems < preco) {
+            addLog('Gemas insuficientes!');
+            return;
+        }
+        player.gems -= preco;
+        player.potions[tipo]++;
+        addLog(`🧪 Você comprou uma Poção de ${tipo}%.`);
+        refreshUI();
+    }
 
-        document.getElementById('statName').innerText = player.name || '???';
-        document.getElementById('statGender').innerText = player.gender === 'masculino' ? '♂' : '♀';
-        document.getElementById('statHp').innerText = player.hp;
-        document.getElementById('statMaxHp').innerText = totalMaxHp;
-        document.getElementById('statMana').innerText = totalMana;
-        document.getElementById('statForca').innerText = totalForca;
-        document.getElementById('statRank').innerText = player.rank;
-        document.getElementById('statGemas').innerText = player.gems;
-        document.getElementById('statNivel').innerText = player.level;
-        document.getElementById('statPontos').innerText = player.pontosStatus;
-        document.getElementById('gemsDisplay').innerHTML = `💎 ${player.gems}`;
-        
-        // Atualizar barra de XP
-        let xpPercent = (player.xp / player.xpNext) * 100;
-        document.getElementById('xpBarFill').style.width = xpPercent + '%';
-        document.getElementById('xpText').innerText = `${player.xp}/${player.xpNext}`;
+    function usarPocao(tipo) {
+        if (inCombat) {
+            addLog('Não pode usar poção em combate.');
+            return;
+        }
+        if (player.potions[tipo] <= 0) {
+            addLog('Você não tem poções desse tipo!');
+            return;
+        }
+        let cura = Math.floor(totalMaxHp * (parseInt(tipo) / 100));
+        player.hp = Math.min(totalMaxHp, player.hp + cura);
+        player.potions[tipo]--;
+        addLog(`🧪 Você usou uma Poção de ${tipo}% e curou ${cura} de vida.`);
+        refreshUI();
+    }
 
-        let maxShadow = Math.floor(totalMana / 20);
-        document.getElementById('maxShadow').innerText = maxShadow;
-        document.getElementById('shadowCount').innerText = player.shadows.length;
+    // ---------- FUNÇÕES DE COMPRA DE GEMAS E MENSAGEM ----------
+    function comprarGemas(gemas, preco) {
+        if (inCombat) {
+            addLog('Não pode comprar durante combate.');
+            return;
+        }
+        if (!confirm(`Quer comprar ${gemas} gemas por R$ ${preco.toFixed(2)}?`)) {
+            return;
+        }
+        alert(`PIX copia e cola: 70472738402\n\nAguardando validação... (1 minuto)`);
+        addLog(`⏳ Processando compra de ${gemas} gemas... Aguarde 1 minuto.`);
+        setTimeout(() => {
+            player.gems += gemas;
+            addLog(`✅ Pagamento confirmado! Você recebeu ${gemas} gemas.`);
+            refreshUI();
+        }, 60000);
+    }
 
-        // Lista de sombras com bônus e botão vender
-        let sl = document.getElementById('shadowList');
-        sl.innerHTML = '';
-        player.shadows.forEach((s, idx) => {
-            let bonus = getBonusPorRank(s.rank);
-            let precoVenda = getPrecoVenda(s.rank);
-            let d = document.createElement('div');
-            d.className = 'shadow-item';
-            d.innerHTML = `
-                <div class="shadow-info">
-                    <span class="shadow-name">${s.nome} (${s.rank})</span>
-                    <span class="shadow-bonus">+${bonus.forca}⚔️ +${bonus.hp}❤️</span>
-                </div>
-                <button class="btn-vender" data-index="${idx}">Vender (💎${precoVenda})</button>
-            `;
-            sl.appendChild(d);
+    function showMessage(title, text) {
+        document.getElementById('messageTitle').innerText = title;
+        document.getElementById('messageText').innerText = text;
+        document.getElementById('messagePrompt').classList.remove('hidden');
+    }
+
+    function renderPotionButtons() {
+        let div = document.getElementById('potionButtons');
+        div.innerHTML = '';
+        for (let tipo in player.potions) {
+            if (player.potions[tipo] > 0) {
+                let btn = document.createElement('button');
+                btn.className = 'potion-btn';
+                btn.innerText = `${tipo}% (${player.potions[tipo]})`;
+                btn.onclick = () => usarPocao(tipo);
+                div.appendChild(btn);
+            }
+        }
+    }
+
+    function renderCompanionShop() {
+        let shopDiv = document.getElementById('companionShopList');
+        let html = '<div class="equip-slot">';
+        const ranks = ['E', 'D', 'C', 'B', 'A', 'S', 'S+'];
+        ranks.forEach(rank => {
+            let companionsRank = companionCatalog.filter(c => c.rank === rank);
+            if (companionsRank.length > 0) {
+                html += `<div class="slot-header">RANK ${rank}</div>`;
+                companionsRank.forEach(c => {
+                    html += `<div class="item-row">
+                        <div class="item-info">
+                            <strong>${c.nome}</strong> (${c.classe})<br>
+                            <small>${c.desc}</small><br>
+                            ⚔️${c.forca} 🔮${c.mana} ❤️${c.hp}
+                        </div>
+                        <button class="btn-contratar" data-id="${c.id}">Contratar (💎${c.preco})</button>
+                    </div>`;
+                });
+            }
         });
-
-        // Adicionar eventos aos botões de vender
-        document.querySelectorAll('.btn-vender').forEach(btn => {
+        html += '</div>';
+        shopDiv.innerHTML = html;
+        
+        document.querySelectorAll('.btn-contratar').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                let index = parseInt(e.target.dataset.index);
-                venderSombra(index);
+                let id = e.target.dataset.id;
+                contratarCompanheiro(id);
             });
         });
+    }
 
-        // Atualizar lista de inimigos na área selecionada (se não estiver em teste)
+    function renderActiveCompanions() {
+        let div = document.getElementById('activeCompanions');
+        if (player.companions.length === 0) {
+            div.innerHTML = '<p>Nenhum companheiro contratado</p>';
+            return;
+        }
+        let html = '';
+        player.companions.forEach(c => {
+            html += `<div class="companion-item">
+                <div class="companion-info">
+                    <span class="companion-name">${c.nome} (${c.rank})</span>
+                    <span class="companion-details">⚔️${c.forca} 🔮${c.mana} ❤️${c.hp}</span>
+                </div>
+            </div>`;
+        });
+        div.innerHTML = html;
+    }
+
+    function renderDungeons() {
+        let listDiv = document.getElementById('dungeonList');
+        let html = '';
+        
+        dungeonInstances.forEach((dungeon, idx) => {
+            let rankValue = rankMultiplier[player.rank] || 1;
+            let dungeonRankValue = rankMultiplier[dungeon.rank] || 1;
+            let isLocked = rankValue < dungeonRankValue;
+            
+            html += `<div class="area-card ${isLocked ? 'locked' : ''}" data-dungeon="${idx}">
+                <div class="area-name">${dungeon.nome}</div>
+                <div class="area-desc">Rank necessário: ${dungeon.rank}</div>
+                ${isLocked ? '<div class="area-req">🔒 Rank insuficiente</div>' : ''}
+            </div>`;
+        });
+        
+        listDiv.innerHTML = html;
+        
+        document.querySelectorAll('.area-card:not(.locked)').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (inCombat) { addLog('Termine o combate primeiro.'); return; }
+                let idx = parseInt(card.dataset.dungeon);
+                let dungeon = dungeonInstances[idx];
+                document.getElementById('promptDungeonName').innerText = dungeon.nome;
+                document.getElementById('dungeonPrompt').classList.remove('hidden');
+                document.getElementById('dungeonPrompt').dataset.dungeonIdx = idx;
+            });
+        });
+    }
+
+    document.getElementById('promptConfirm').addEventListener('click', () => {
+        let idx = document.getElementById('dungeonPrompt').dataset.dungeonIdx;
+        if (idx !== undefined) {
+            dungeonInstances[idx].inimigos = gerarInimigosDungeon(idx);
+            dungeonComplete = false;
+            currentDungeonIdx = parseInt(idx);
+            player.currentDungeonRank = dungeonInstances[currentDungeonIdx].rank;
+            isTestRank = false;
+            window.currentTestEnemy = null;
+            
+            if (player.companions.length > 0) {
+                document.getElementById('companionStatus').classList.remove('hidden');
+            }
+            renderPotionButtons();
+            document.getElementById('potionStatus').classList.remove('hidden');
+            
+            refreshUI();
+        }
+        document.getElementById('dungeonPrompt').classList.add('hidden');
+    });
+
+    document.getElementById('promptCancel').addEventListener('click', () => {
+        document.getElementById('dungeonPrompt').classList.add('hidden');
+    });
+
+    function renderEnemies() {
         let enemyDiv = document.getElementById('enemyList');
-        if (!isTestRank && currentArea) {
-            let area = areas[currentArea];
-            let html = `<h4>${area.nome}</h4>`;
-            area.inimigos.forEach((inv, idx) => {
+        if (dungeonComplete) {
+            enemyDiv.innerHTML = '<h4>🏆 Masmorra concluída!</h4><p>Parabéns! Escolha outra masmorra ou reinicie esta.</p>';
+        } else if (!isTestRank && currentDungeonIdx !== null) {
+            let dungeon = dungeonInstances[currentDungeonIdx];
+            let html = `<h4>${dungeon.nome}</h4>`;
+            dungeon.inimigos.forEach((inv, idx) => {
+                let bossTag = inv.isBoss ? ' 👑' : '';
                 if (inv.vivo) {
-                    html += `<div class="enemy-entry" data-area="${currentArea}" data-idx="${idx}">${inv.nome} ❤️${inv.hp}/${inv.maxHp}</div>`;
+                    html += `<div class="enemy-entry" data-dungeon="${currentDungeonIdx}" data-idx="${idx}">${inv.nome} (${inv.rank})${bossTag} ❤️${inv.hp}/${inv.maxHp}</div>`;
                 } else {
-                    html += `<div class="enemy-entry" style="opacity:0.5;" data-area="${currentArea}" data-idx="${idx}">💀 ${inv.nome} (derrotado)</div>`;
+                    html += `<div class="enemy-entry" style="opacity:0.5;" data-dungeon="${currentDungeonIdx}" data-idx="${idx}">💀 ${inv.nome}${bossTag} (derrotado)</div>`;
                 }
             });
             enemyDiv.innerHTML = html;
@@ -826,11 +1446,11 @@
             document.querySelectorAll('.enemy-entry').forEach(el => {
                 el.addEventListener('click', (e) => {
                     if (inCombat) { addLog('Você já está em combate!'); return; }
-                    let area = el.dataset.area;
+                    let dungeonIdx = parseInt(el.dataset.dungeon);
                     let idx = parseInt(el.dataset.idx);
-                    let inimigo = areas[area].inimigos[idx];
+                    let inimigo = dungeonInstances[dungeonIdx].inimigos[idx];
                     if (!inimigo.vivo) { addLog('Este inimigo já foi derrotado.'); return; }
-                    currentArea = area;
+                    currentDungeonIdx = dungeonIdx;
                     currentEnemyIndex = idx;
                     isTestRank = false;
                     inCombat = true;
@@ -843,21 +1463,82 @@
         } else if (isTestRank) {
             enemyDiv.innerHTML = '<h4>⚔️ TESTE DE RANKING</h4><p>Você está em combate de teste. Finalize ou fuja.</p>';
         } else {
-            enemyDiv.innerHTML = '<div style="text-align:center;">Selecione uma área no mapa</div>';
+            enemyDiv.innerHTML = '<div style="text-align:center;">Selecione uma masmorra</div>';
+        }
+    }
+
+    function refreshUI() {
+        recalcularTotais();
+
+        document.getElementById('statHp').innerText = player.hp;
+        document.getElementById('statMaxHp').innerText = totalMaxHp;
+        document.getElementById('statMana').innerText = totalMana;
+        document.getElementById('statForca').innerText = totalForca;
+        document.getElementById('statVit').innerText = totalMaxHp;
+        document.getElementById('statPontos').innerText = player.pontosStatus;
+        document.getElementById('statGemas').innerText = player.gems;
+        document.getElementById('statRank').innerText = player.rank; // Atualiza o rank
+        document.getElementById('gemsDisplay').innerHTML = `💎 ${player.gems}`;
+        
+        let xpPercent = (player.xp / player.xpNext) * 100;
+        document.getElementById('xpBarFill').style.width = xpPercent + '%';
+        document.getElementById('xpText').innerText = `${player.xp}/${player.xpNext}`;
+
+        let maxShadow = Math.floor(totalMana / 30);
+        document.getElementById('maxShadow').innerText = maxShadow;
+        document.getElementById('shadowCount').innerText = player.shadows.length;
+
+        let sl = document.getElementById('shadowList');
+        sl.innerHTML = '';
+        player.shadows.forEach((s, idx) => {
+            let bonus = getShadowBonus(s);
+            let precoVenda = shadowBasePrice[s.rank] * s.level;
+            let d = document.createElement('div');
+            d.className = 'shadow-item';
+            d.innerHTML = `
+                <div class="shadow-info">
+                    <span class="shadow-name">${s.nome} (${s.rank}) Lv.${s.level}</span>
+                    <span class="shadow-bonus">+${bonus.forca}⚔️ +${bonus.hp}❤️ XP: ${s.xp}/${s.xpNext}</span>
+                </div>
+                <button class="btn-vender" data-index="${idx}">Vender (💎${precoVenda})</button>
+            `;
+            sl.appendChild(d);
+        });
+
+        document.querySelectorAll('.btn-vender').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                let index = parseInt(e.target.dataset.index);
+                venderSombra(index);
+            });
+        });
+
+        renderDungeons();
+        renderEnemies();
+        renderActiveCompanions();
+        
+        if (player.companions.length > 0 && currentDungeonIdx !== null) {
+            document.getElementById('companionStatus').classList.remove('hidden');
+        } else {
+            document.getElementById('companionStatus').classList.add('hidden');
         }
 
-        // Exibir/esconder botões de level up
+        renderPotionButtons();
+        if (currentDungeonIdx !== null) {
+            document.getElementById('potionStatus').classList.remove('hidden');
+        } else {
+            document.getElementById('potionStatus').classList.add('hidden');
+        }
+
         if (player.pontosStatus > 0) {
             document.getElementById('levelUpActions').classList.remove('hidden');
         } else {
             document.getElementById('levelUpActions').classList.add('hidden');
         }
 
-        // Atualizar loja de equipamentos
         renderShop();
+        renderCompanionShop();
     }
 
-    // Renderizar a loja com itens
     function renderShop() {
         let shopDiv = document.getElementById('shopPanel');
         let html = '';
@@ -873,27 +1554,25 @@
                 if (equipado) {
                     textoBotao = 'Equipado';
                 } else if (possui) {
-                    textoBotao = 'Equipar (já possui)';
+                    textoBotao = 'Equipar';
                 } else {
                     textoBotao = `Comprar (💎${item.preco})`;
                 }
                 html += `<div class="item-row">
                     <span class="item-info">${item.nome} (HP:${item.hp||0} FOR:${item.forca||0} MAN:${item.mana||0})</span>
-                    <button class="btn btn-equip" data-slot="${slot}" data-item-id="${item.id}">${textoBotao}</button>
+                    <button class="btn-equip" data-slot="${slot}" data-item-id="${item.id}">${textoBotao}</button>
                 </div>`;
             });
-            // Opção para remover equipamento (nenhum) - só aparece se tiver algo equipado
             if (player.equipment[slot]) {
                 html += `<div class="item-row">
                     <span class="item-info">Nenhum</span>
-                    <button class="btn btn-equip" data-slot="${slot}" data-item-id="none">Remover</button>
+                    <button class="btn-equip" data-slot="${slot}" data-item-id="none">Remover</button>
                 </div>`;
             }
             html += '</div>';
         }
         shopDiv.innerHTML = html;
 
-        // Adicionar eventos aos botões de equipar
         document.querySelectorAll('.btn-equip').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 let slot = e.target.dataset.slot;
@@ -903,11 +1582,9 @@
         });
     }
 
-    // Função para equipar/remover item (agora com inventário)
     function equiparItem(slot, itemId) {
         if (inCombat) { addLog('Não pode equipar durante combate.'); return; }
 
-        // Caso seja remoção (itemId = null)
         if (itemId === null) {
             player.equipment[slot] = null;
             addLog(`Removeu equipamento do slot ${slot}.`);
@@ -915,20 +1592,16 @@
             return;
         }
 
-        // Verificar se o item existe no catálogo
         let item = encontrarItemPorId(slot, itemId);
         if (!item) {
             addLog('Item inválido.');
             return;
         }
 
-        // Verificar se já possui o item
         if (player.inventario.includes(itemId)) {
-            // Já possui: equipar diretamente
             player.equipment[slot] = itemId;
             addLog(`Equipou ${item.nome} no slot ${slot}.`);
         } else {
-            // Não possui: tentar comprar
             if (player.gems < item.preco) {
                 addLog('Gemas insuficientes!');
                 return;
@@ -942,7 +1615,20 @@
         refreshUI();
     }
 
-    // Combate: atacar
+    function venderSombra(index) {
+        if (inCombat) {
+            addLog('Não pode vender sombras durante combate.');
+            return;
+        }
+        if (index < 0 || index >= player.shadows.length) return;
+        let sombra = player.shadows[index];
+        let preco = shadowBasePrice[sombra.rank] * sombra.level;
+        player.gems += preco;
+        player.shadows.splice(index, 1);
+        addLog(`💰 Você vendeu ${sombra.nome} (Lv.${sombra.level}) por ${preco} gemas.`);
+        refreshUI();
+    }
+
     function atacar() {
         if (!inCombat) return;
 
@@ -951,33 +1637,31 @@
             if (!window.currentTestEnemy) return;
             inimigo = window.currentTestEnemy;
         } else {
-            if (currentEnemyIndex === null) return;
-            inimigo = areas[currentArea].inimigos[currentEnemyIndex];
+            if (currentEnemyIndex === null || currentDungeonIdx === null) return;
+            inimigo = dungeonInstances[currentDungeonIdx].inimigos[currentEnemyIndex];
         }
 
         if (!inimigo.vivo) { 
             inCombat = false; 
             if (!isTestRank) currentEnemyIndex = null;
             else window.currentTestEnemy = null;
-            regenerarVida();
             refreshUI(); 
             return; 
         }
 
-        // Jogador ataca - dano agora é (força * 2) + aleatório para tornar diferença mais significativa
         let dano = (totalForca * 2) + Math.floor(Math.random() * 5);
         inimigo.hp -= dano;
         addLog(`Você causou ${dano} de dano. ${inimigo.nome} HP: ${inimigo.hp}/${inimigo.maxHp}`);
 
         if (inimigo.hp <= 0) {
-            // Vitória
             inimigo.vivo = false;
             if (!isTestRank) {
-                // Inimigo normal
                 player.xp += inimigo.xp;
                 player.gems += inimigo.gem;
                 addLog(`💀 ${inimigo.nome} derrotado! +${inimigo.xp} XP, +${inimigo.gem} gemas.`);
-                // Verificar level up
+                
+                darXPSombras(inimigo.xp);
+                
                 while (player.xp >= player.xpNext) {
                     player.level++;
                     player.xp -= player.xpNext;
@@ -985,42 +1669,38 @@
                     player.pontosStatus += 3;
                     addLog(`⬆️ Subiu para nível ${player.level}! Ganhou 3 pontos de status.`);
                 }
-                // Oferecer recrutamento
                 inCombat = false;
                 document.getElementById('combatActions').classList.add('hidden');
                 document.getElementById('shadowRecruit').classList.remove('hidden');
             } else {
-                // Teste de ranking: subir de rank
                 let rankAtual = player.rank;
                 let proximoRank = obterProximoRank(rankAtual);
                 if (proximoRank) {
                     player.rank = proximoRank;
                     addLog(`🎉 PARABÉNS! Você subiu para o Rank ${proximoRank}!`);
                 } else {
-                    addLog(`Você já é Rank S, não pode subir mais.`);
+                    addLog(`Você já é Rank S+, não pode subir mais.`);
                 }
+                // Restaura a vida após o teste de ranking
+                player.hp = totalMaxHp;
                 inCombat = false;
                 isTestRank = false;
                 window.currentTestEnemy = null;
                 document.getElementById('combatActions').classList.add('hidden');
                 document.getElementById('shadowRecruit').classList.add('hidden');
             }
-            regenerarVida();
-            // Verificar se a área precisa ser regenerada
-            if (!isTestRank && currentArea) {
-                regenerarAreaSeNecessario(currentArea);
+            if (!isTestRank && currentDungeonIdx !== null) {
+                regenerarDungeonSeNecessario(currentDungeonIdx);
             }
             refreshUI();
             return;
         }
 
-        // Inimigo ataca
         let danoInimigo = inimigo.forca + Math.floor(Math.random() * 4);
         player.hp -= danoInimigo;
         addLog(`😖 ${inimigo.nome} causou ${danoInimigo} de dano. Seu HP: ${player.hp}/${totalMaxHp}`);
 
         if (player.hp <= 0) {
-            // Morte do jogador
             aplicarPenalidadeMorte();
             inCombat = false;
             if (isTestRank) {
@@ -1029,9 +1709,6 @@
             } else {
                 currentEnemyIndex = null;
             }
-            regenerarVida();
-            document.getElementById('combatActions').classList.add('hidden');
-            document.getElementById('shadowRecruit').classList.add('hidden');
             refreshUI();
             return;
         }
@@ -1039,7 +1716,7 @@
     }
 
     function obterProximoRank(rank) {
-        const ranks = ['E','D','C','B','A','S'];
+        const ranks = ['E', 'D', 'C', 'B', 'A', 'S', 'S+'];
         let idx = ranks.indexOf(rank);
         if (idx >= 0 && idx < ranks.length-1) return ranks[idx+1];
         return null;
@@ -1056,17 +1733,16 @@
             currentEnemyIndex = null;
         }
         document.getElementById('combatActions').classList.add('hidden');
-        regenerarVida();
         refreshUI();
     }
 
     function tentarSombra() {
         if (recruitAttempts <= 0) return;
-        let inimigo = areas[currentArea].inimigos[currentEnemyIndex];
+        if (currentDungeonIdx === null || currentEnemyIndex === null) return;
+        let inimigo = dungeonInstances[currentDungeonIdx].inimigos[currentEnemyIndex];
         if (!inimigo || inimigo.vivo) return;
 
-        // Verificar limite de sombras
-        let maxShadow = Math.floor(totalMana / 20);
+        let maxShadow = Math.floor(totalMana / 30);
         if (player.shadows.length >= maxShadow) {
             addLog('Você atingiu o limite de sombras! Aumente sua Mana para invocar mais.');
             document.getElementById('shadowRecruit').classList.add('hidden');
@@ -1075,7 +1751,7 @@
             return;
         }
 
-        let rankVal = { 'E':1, 'D':2, 'C':4, 'B':8, 'A':16, 'S':48 };
+        let rankVal = { 'E':1, 'D':5, 'C':25, 'B':125, 'A':625, 'S':3125, 'S+':15625 };
         let playerRankVal = rankVal[player.rank] || 1;
         let inimigoRankVal = rankVal[inimigo.rank] || 1;
         let chance = 0.3 + (playerRankVal - inimigoRankVal) * 0.1;
@@ -1085,10 +1761,12 @@
             let novaSombra = {
                 nome: inimigo.nome,
                 rank: inimigo.rank,
-                nivel: 1
+                level: 1,
+                xp: 0,
+                xpNext: 100
             };
             player.shadows.push(novaSombra);
-            addLog(`✨ Sucesso! ${inimigo.nome} se tornou sua sombra.`);
+            addLog(`✨ Sucesso! ${inimigo.nome} se tornou sua sombra (Nv.1).`);
             document.getElementById('shadowRecruit').classList.add('hidden');
             currentEnemyIndex = null;
         } else {
@@ -1109,7 +1787,6 @@
         refreshUI();
     }
 
-    // Função para iniciar teste de ranking
     function iniciarTesteRank() {
         if (inCombat) {
             addLog('Você já está em combate!');
@@ -1117,16 +1794,15 @@
         }
         let proximoRank = obterProximoRank(player.rank);
         if (!proximoRank) {
-            addLog('Você já é Rank S, não pode testar mais.');
+            addLog('Você já é Rank S+, não pode testar mais.');
             return;
         }
-        // Gerar inimigo de teste (rank superior) usando multiplicadores
         let rank = proximoRank;
         let mult = rankMultiplier[rank];
         let nome = `Guardião Rank ${rank}`;
-        let hp = 50 * mult;       // base 50 para E
-        let forca = 10 * mult;     // base 10 para E
-        let xp = 0; // não ganha xp no teste
+        let hp = 50 * mult;
+        let forca = 10 * mult;
+        let xp = 0;
         let gem = 0;
         let inimigoTeste = {
             nome,
@@ -1141,7 +1817,7 @@
         window.currentTestEnemy = inimigoTeste;
         isTestRank = true;
         inCombat = true;
-        currentArea = null;
+        currentDungeonIdx = null;
         currentEnemyIndex = null;
         document.getElementById('combatActions').classList.remove('hidden');
         document.getElementById('shadowRecruit').classList.add('hidden');
@@ -1149,7 +1825,6 @@
         refreshUI();
     }
 
-    // Level up status
     function addStat(stat) {
         if (player.pontosStatus <= 0) return;
         player.pontosStatus--;
@@ -1159,7 +1834,7 @@
         refreshUI();
     }
 
-    // Inicialização e eventos
+    // Event listeners
     document.getElementById('btnSurgirInicial').addEventListener('click', () => {
         document.getElementById('startScreen').classList.add('hidden');
         document.getElementById('creationScreen').classList.remove('hidden');
@@ -1167,51 +1842,69 @@
 
     document.getElementById('btnIniciarJogo').addEventListener('click', () => {
         let nome = document.getElementById('playerName').value.trim();
-        if (nome === '') nome = 'Jin-Woo';
-        let genero = document.getElementById('playerGender').value;
+        if (nome === '') {
+            alert('Por favor, digite o nome do caçador!');
+            return;
+        }
         player.name = nome;
-        player.gender = genero;
         document.getElementById('creationScreen').classList.add('hidden');
         document.getElementById('gameScreen').classList.remove('hidden');
         addLog(`Bem-vindo, Caçador ${player.name}.`);
-
-        // Selecionar área inicial (campo)
-        currentArea = 'campo';
         refreshUI();
     });
 
-    // Seleção de área
-    document.querySelectorAll('.area-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-            if (inCombat) { addLog('Termine o combate primeiro.'); return; }
-            document.querySelectorAll('.area-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            let area = card.dataset.area;
-            currentArea = area;
-            isTestRank = false;
-            window.currentTestEnemy = null;
-            refreshUI();
+    document.querySelectorAll('.shop-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.shop-panel').forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            let shopId = tab.dataset.shop;
+            if (shopId === 'equip') document.getElementById('shopEquip').classList.add('active');
+            else if (shopId === 'companion') document.getElementById('shopCompanion').classList.add('active');
+            else if (shopId === 'potion') document.getElementById('shopPotion').classList.add('active');
+            else if (shopId === 'gemshop') document.getElementById('shopGems').classList.add('active');
         });
     });
 
-    // BOTÕES DE COMBATE
+    document.querySelectorAll('.btn-comprar-pocao').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            let tipo = e.target.dataset.tipo;
+            comprarPocao(tipo);
+        });
+    });
+
+    // Event listeners para os botões de compra de gemas
+    document.querySelectorAll('.btn-comprar-gemas').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            let gemas = parseInt(e.target.dataset.gemas);
+            let preco = parseFloat(e.target.dataset.preco);
+            comprarGemas(gemas, preco);
+        });
+    });
+
     document.getElementById('btnAtacar').addEventListener('click', atacar);
     document.getElementById('btnFugir').addEventListener('click', fugir);
     document.getElementById('btnTornarSombra').addEventListener('click', tentarSombra);
     document.getElementById('btnEliminar').addEventListener('click', eliminar);
-
-    // LEVEL UP
     document.getElementById('btnForca').addEventListener('click', () => addStat('forca'));
     document.getElementById('btnMana').addEventListener('click', () => addStat('mana'));
     document.getElementById('btnVida').addEventListener('click', () => addStat('vida'));
-
-    // BOTÃO SUBIR RANKING
     document.getElementById('btnSubirRanking').addEventListener('click', iniciarTesteRank);
 
-    // Atualização periódica
-    setInterval(refreshUI, 200);
+    // Botão Loja de Gemas (abre a aba correspondente)
+    document.getElementById('btnLojaGemas').addEventListener('click', () => {
+        document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.shop-panel').forEach(p => p.classList.remove('active'));
+        document.querySelector('[data-shop="gemshop"]').classList.add('active');
+        document.getElementById('shopGems').classList.add('active');
+    });
 
-    // Inicialmente, carregar stats vazios
+    // Botão OK do diálogo de mensagens
+    document.getElementById('messageOk').addEventListener('click', () => {
+        document.getElementById('messagePrompt').classList.add('hidden');
+    });
+
+    setInterval(refreshUI, 200);
     refreshUI();
 })();
 </script>
