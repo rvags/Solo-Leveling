@@ -94,6 +94,7 @@
             align-items: center;
             text-align: center;
             min-height: 80vh;
+            position: relative;
         }
         #startScreen h1 {
             font-size: clamp(2.5rem, 10vw, 5rem);
@@ -105,8 +106,10 @@
             font-size: clamp(1rem, 4vw, 1.8rem);
             color: #ffd966;
             text-shadow: 0 0 15px #b266ff;
-            margin-bottom: 40px;
-            display: inline-block;
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            margin: 0;
         }
         .surgir-btn {
             background: linear-gradient(145deg, #6a1f9e, #38006b);
@@ -126,6 +129,49 @@
             transform: scale(1.1);
             background: #8a2be2;
             box-shadow: 0 0 50px #d4a1ff;
+        }
+        #instructionScreen {
+            justify-content: center;
+            align-items: center;
+        }
+        .instruction-box {
+            background: #2d1545;
+            border: 3px solid #ffd966;
+            border-radius: 30px;
+            padding: 30px;
+            text-align: center;
+            width: min(90%, 500px);
+            box-shadow: 0 0 50px #000;
+        }
+        .instruction-box h2 {
+            color: #ffd966;
+            font-size: clamp(2rem, 6vw, 2.8rem);
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .instruction-box p {
+            color: #f0e6ff;
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
+            margin-bottom: 30px;
+            line-height: 1.6;
+            white-space: normal;
+            text-align: left;
+        }
+        .instruction-box button {
+            background: #4a2a6b;
+            border: 2px solid #c69cff;
+            color: white;
+            font-size: clamp(1.2rem, 5vw, 1.8rem);
+            padding: 10px 30px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .instruction-box button:hover {
+            background: #7a4fb3;
+            border-color: #f2daff;
         }
         #creationScreen {
             justify-content: center;
@@ -167,7 +213,6 @@
         #gameScreen {
             flex-direction: column;
         }
-        /* Layout responsivo: em telas grandes, linha; em pequenas, coluna */
         @media (min-width: 1024px) {
             #gameScreen {
                 flex-direction: row;
@@ -277,7 +322,6 @@
                 width: 45%;
             }
         }
-        /* Painel de estatísticas */
         #playerStats {
             background: #221134;
             border-radius: 20px;
@@ -579,6 +623,11 @@
             width: min(90%, 500px);
             max-width: 90vw;
         }
+        /* Estilo específico para notificação de level up (bordas brancas e quadradas) */
+        #messagePrompt.levelup {
+            border: 3px solid white;
+            border-radius: 0;
+        }
         #dungeonPrompt h2, #messagePrompt h2 {
             margin-top: 0;
             color: #ffd966;
@@ -592,46 +641,41 @@
             font-size: clamp(1.2rem, 5vw, 2rem);
             padding: 8px 20px;
         }
-        /* Estilo para o timer de validação */
         #pixTimer {
             color: #ffaa00;
             font-weight: bold;
         }
-
-        /* ===== ESTILIZAÇÃO DOS MONSTROS ===== */
+        /* Estilização dos monstros (mantida) */
         :root {
-          --rank-e: #8e8e8e;      /* Cinza - Rank E */
-          --rank-d: #4caf50;      /* Verde - Rank D */
-          --rank-c: #2196f3;      /* Azul - Rank C */
-          --rank-b: #9c27b0;      /* Roxo - Rank B */
-          --rank-a: #ff9800;      /* Laranja - Rank A */
-          --rank-s: #f44336;      /* Vermelho - Rank S */
-          --rank-sp: #ffd700;     /* Dourado - Rank S+ */
-          --sombra-bg: #1a0f2a;
-          --sombra-borda: #6a4c9c;
+            --rank-e: #8e8e8e;
+            --rank-d: #4caf50;
+            --rank-c: #2196f3;
+            --rank-b: #9c27b0;
+            --rank-a: #ff9800;
+            --rank-s: #f44336;
+            --rank-sp: #ffd700;
+            --sombra-bg: #1a0f2a;
+            --sombra-borda: #6a4c9c;
         }
-
         .enemy-entry {
-          position: relative;
-          padding-left: 40px !important;
-          border-left: 5px solid transparent;
-          transition: all 0.2s;
-          font-weight: 500;
-          background: linear-gradient(145deg, #2a1742, #1f0e32);
-          border-radius: 12px;
-          margin: 6px 0;
+            position: relative;
+            padding-left: 40px !important;
+            border-left: 5px solid transparent;
+            transition: all 0.2s;
+            font-weight: 500;
+            background: linear-gradient(145deg, #2a1742, #1f0e32);
+            border-radius: 12px;
+            margin: 6px 0;
         }
-
         .enemy-entry::before {
-          content: "👾";
-          position: absolute;
-          left: 10px;
-          top: 50%;
-          transform: translateY(-50%);
-          font-size: 1.6rem;
-          filter: drop-shadow(0 0 4px currentColor);
+            content: "👾";
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.6rem;
+            filter: drop-shadow(0 0 4px currentColor);
         }
-
         .enemy-entry[data-nome*="Goblin"]::before { content: "👹"; }
         .enemy-entry[data-nome*="Cobra"]::before,
         .enemy-entry[data-nome*="Kasaka"]::before { content: "🐍"; }
@@ -649,7 +693,6 @@
         .enemy-entry[data-nome*="Kamish"]::before { content: "🐉"; }
         .enemy-entry[data-nome*="Beru"]::before,
         .enemy-entry[data-nome*="Bellion"]::before { content: "👑"; }
-
         .enemy-entry[data-rank="E"] { border-left-color: var(--rank-e); }
         .enemy-entry[data-rank="D"] { border-left-color: var(--rank-d); }
         .enemy-entry[data-rank="C"] { border-left-color: var(--rank-c); }
@@ -657,78 +700,74 @@
         .enemy-entry[data-rank="A"] { border-left-color: var(--rank-a); }
         .enemy-entry[data-rank="S"] { border-left-color: var(--rank-s); }
         .enemy-entry[data-rank="S+"] { border-left-color: var(--rank-sp); }
-
         .enemy-entry.is-boss {
-          background: linear-gradient(145deg, #4a2a5a, #2a1a3a);
-          box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-          border: 2px solid gold;
+            background: linear-gradient(145deg, #4a2a5a, #2a1a3a);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            border: 2px solid gold;
         }
         .enemy-entry.is-boss::before {
-          content: "👑";
-          filter: drop-shadow(0 0 8px gold);
+            content: "👑";
+            filter: drop-shadow(0 0 8px gold);
         }
-
         .enemy-entry[style*="opacity:0.5"] {
-          filter: grayscale(1) opacity(0.7);
-          text-decoration: line-through;
-          background: #2a1a2a;
+            filter: grayscale(1) opacity(0.7);
+            text-decoration: line-through;
+            background: #2a1a2a;
         }
         .enemy-entry[style*="opacity:0.5"]::before {
-          content: "💀";
-          opacity: 0.8;
+            content: "💀";
+            opacity: 0.8;
         }
-
         #shadowList .shadow-item {
-          background: linear-gradient(145deg, #2d1a40, #1a0f2a);
-          border: 1px solid var(--sombra-borda);
-          border-radius: 16px;
-          padding: 12px;
-          margin: 8px 0;
-          box-shadow: 0 4px 8px rgba(0,0,0,0.6);
-          position: relative;
-          transition: 0.2s;
+            background: linear-gradient(145deg, #2d1a40, #1a0f2a);
+            border: 1px solid var(--sombra-borda);
+            border-radius: 16px;
+            padding: 12px;
+            margin: 8px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+            position: relative;
+            transition: 0.2s;
         }
         #shadowList .shadow-item:hover {
-          transform: scale(1.02);
-          border-color: #b386ff;
-          box-shadow: 0 0 15px #8a4cff;
+            transform: scale(1.02);
+            border-color: #b386ff;
+            box-shadow: 0 0 15px #8a4cff;
         }
         .shadow-info .shadow-name {
-          color: #d4b5ff;
-          text-shadow: 0 0 8px #8a4cff;
-          font-size: 1.2rem;
+            color: #d4b5ff;
+            text-shadow: 0 0 8px #8a4cff;
+            font-size: 1.2rem;
         }
         .shadow-bonus {
-          background: #2a1e3a;
-          padding: 4px 8px;
-          border-radius: 20px;
-          border: 1px solid #6a4c9c;
-          font-size: 0.9rem;
+            background: #2a1e3a;
+            padding: 4px 8px;
+            border-radius: 20px;
+            border: 1px solid #6a4c9c;
+            font-size: 0.9rem;
         }
         .shadow-item::before {
-          content: "🌑";
-          position: absolute;
-          right: 10px;
-          top: 10px;
-          font-size: 2rem;
-          opacity: 0.3;
-          filter: drop-shadow(0 0 5px #a55aff);
+            content: "🌑";
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            font-size: 2rem;
+            opacity: 0.3;
+            filter: drop-shadow(0 0 5px #a55aff);
         }
-
         .companion-item {
-          background: #1e1230;
-          border: 1px solid #5e3a8a;
-          border-radius: 20px;
-          padding: 12px;
-          margin: 8px 0;
-          display: flex;
-          align-items: center;
-          gap: 12px;
+            background: #1e1230;
+            border: 1px solid #5e3a8a;
+            border-radius: 20px;
+            padding: 12px;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         .companion-item::before {
-          content: "👤";
-          font-size: 2rem;
-          filter: drop-shadow(0 0 4px #5e3a8a);
+            content: "👤";
+            font-size: 2rem;
+            filter: drop-shadow(0 0 4px #5e3a8a);
         }
         .companion-item[data-classe="Mage"]::before { content: "🔮"; }
         .companion-item[data-classe="Tanker"]::before { content: "🛡️"; }
@@ -736,59 +775,57 @@
         .companion-item[data-classe="Assassin"]::before { content: "🗡️"; }
         .companion-item[data-classe="Fighter"]::before { content: "⚡"; }
         .companion-name {
-          color: #ffd966;
-          font-size: 1.2rem;
+            color: #ffd966;
+            font-size: 1.2rem;
         }
         .companion-details {
-          color: #b0b0ff;
-          font-size: 0.9rem;
+            color: #b0b0ff;
+            font-size: 0.9rem;
         }
-
         #combatActions .btn {
-          background: #4a1f6a;
-          border: 2px solid #b77eff;
-          color: white;
-          transition: 0.2s;
-          position: relative;
-          overflow: hidden;
+            background: #4a1f6a;
+            border: 2px solid #b77eff;
+            color: white;
+            transition: 0.2s;
+            position: relative;
+            overflow: hidden;
         }
         #combatActions .btn:hover {
-          background: #6a2f8a;
-          box-shadow: 0 0 20px #b77eff;
+            background: #6a2f8a;
+            box-shadow: 0 0 20px #b77eff;
         }
         #combatActions .btn:active {
-          transform: scale(0.95);
+            transform: scale(0.95);
         }
         #btnAtacar::before {
-          content: "⚔️";
-          margin-right: 8px;
+            content: "⚔️";
+            margin-right: 8px;
         }
         #btnFugir::before {
-          content: "🏃";
-          margin-right: 8px;
+            content: "🏃";
+            margin-right: 8px;
         }
         #btnTornarSombra::before {
-          content: "🌑";
-          margin-right: 8px;
+            content: "🌑";
+            margin-right: 8px;
         }
         #btnEliminar::before {
-          content: "💔";
-          margin-right: 8px;
+            content: "💔";
+            margin-right: 8px;
         }
-
         .enemy-entry::after {
-          content: "";
-          position: absolute;
-          bottom: 4px;
-          left: 40px;
-          width: calc(100% - 50px);
-          height: 4px;
-          background: #333;
-          border-radius: 4px;
+            content: "";
+            position: absolute;
+            bottom: 4px;
+            left: 40px;
+            width: calc(100% - 50px);
+            height: 4px;
+            background: #333;
+            border-radius: 4px;
         }
         .enemy-entry[data-hp]::after {
-          background: linear-gradient(90deg, #ff4d4d, #ffaa00);
-          width: calc((attr(data-hp) / attr(data-maxhp)) * (100% - 50px));
+            background: linear-gradient(90deg, #ff4d4d, #ffaa00);
+            width: calc((attr(data-hp) / attr(data-maxhp)) * (100% - 50px));
         }
     </style>
 </head>
@@ -800,6 +837,15 @@
         <h1>SOLO LEVELING</h1>
         <div class="criador">Renan Vinicius A. G. da Silva</div>
         <button class="surgir-btn" id="btnSurgirInicial">SURGIR</button>
+    </div>
+
+    <!-- TELA DE INSTRUÇÕES (com o novo título e texto) -->
+    <div id="instructionScreen" class="screen hidden">
+        <div class="instruction-box">
+            <h2>Sistema: Bem Vindo</h2>
+            <p>Neste jogo, você enfrentará masmorras repletas de inimigos. Derrote monstros, ganhe experiência e gemas, e suba de rank. Você pode recrutar sombras dos inimigos derrotados e contratar companheiros para ajudá-lo nas batalhas. Complete masmorras para avançar e torne-se o caçador mais forte!</p>
+            <button id="btnInstrucoesContinuar">Continuar</button>
+        </div>
     </div>
 
     <!-- TELA DE CRIAÇÃO -->
@@ -875,9 +921,7 @@
         <!-- PAINEL DIREITO -->
         <div id="rightPanel">
             <button id="btnLojaGemas" class="btn">💎 LOJA DE GEMAS</button>
-            
             <div id="gemsDisplay">💎 0</div>
-            
             <div>
                 <div class="shop-tabs">
                     <div class="shop-tab active" data-shop="equip">🛡️ Equip.</div>
@@ -885,17 +929,14 @@
                     <div class="shop-tab" data-shop="potion">🧪 Poções</div>
                     <div class="shop-tab" data-shop="gemshop">💎 Gemas</div>
                 </div>
-                
                 <div id="shopEquip" class="shop-panel active">
                     <div id="shopPanel"></div>
                 </div>
-                
                 <div id="shopCompanion" class="shop-panel">
                     <h4>📜 CONTRATAR COMPANHEIROS</h4>
                     <div id="companionShopList"></div>
                     <div id="companionList"></div>
                 </div>
-                
                 <div id="shopPotion" class="shop-panel">
                     <h4>🧪 POÇÕES DE VIDA</h4>
                     <div class="item-row">
@@ -919,7 +960,6 @@
                         <button class="btn-comprar-pocao" data-tipo="100">Comprar (💎10000)</button>
                     </div>
                 </div>
-
                 <div id="shopGems" class="shop-panel">
                     <h4>💎 COMPRAR GEMAS</h4>
                     <div class="item-row">
@@ -948,23 +988,21 @@
                     </div>
                 </div>
             </div>
-            
             <div>
                 <h4>👥 SOMBRAS (<span id="shadowCount">0</span>/<span id="maxShadow">0</span>)</h4>
                 <div id="shadowList"></div>
             </div>
-
             <button id="btnSubirRanking" class="btn">⬆️ SUBIR RANKING</button>
         </div>
     </div>
-    <!-- Diálogo de confirmação de masmorra -->
+
+    <!-- Diálogos -->
     <div id="dungeonPrompt" class="hidden">
         <h2 id="promptDungeonName"></h2>
         <p>Iniciar esta masmorra?</p>
         <button class="btn" id="promptConfirm">⚔️ SURGIR</button>
         <button class="btn" id="promptCancel">❌ Ainda não</button>
     </div>
-    <!-- Diálogo de mensagens (vitória/morte) -->
     <div id="messagePrompt" class="hidden">
         <h2 id="messageTitle"></h2>
         <p id="messageText"></p>
@@ -1026,77 +1064,53 @@
 
     const companionCatalog = [
         { id: 'han_songyi_e', nome: 'Han Song-Yi', rank: 'E', classe: 'Mage', preco: 30,
-          desc: 'Estudante rank-E, sonha ser hunter mas é inexperiente',
-          forca: 5, mana: 15, hp: 50 },
+          desc: 'Estudante rank-E, sonha ser hunter mas é inexperiente', forca: 5, mana: 15, hp: 50 },
         { id: 'yoo_jinho_base', nome: 'Yoo Jinho (Base)', rank: 'E', classe: 'Tanker', preco: 35,
-          desc: 'Herdeiro da Yoojin Construction, leal mas sem experiência',
-          forca: 8, mana: 5, hp: 80 },
+          desc: 'Herdeiro da Yoojin Construction, leal mas sem experiência', forca: 8, mana: 5, hp: 80 },
         { id: 'ju_hee', nome: 'Ju-Hee', rank: 'D', classe: 'Healer', preco: 60,
-          desc: 'Healer B-rank que se aposentou após trauma',
-          forca: 2, mana: 25, hp: 40 },
+          desc: 'Healer B-rank que se aposentou após trauma', forca: 2, mana: 25, hp: 40 },
         { id: 'song_chi_yul', nome: 'Song Chi-Yul', rank: 'D', classe: 'Mage', preco: 70,
-          desc: 'Professor de kumdo, perdeu o braço no Double Dungeon',
-          forca: 10, mana: 20, hp: 70 },
+          desc: 'Professor de kumdo, perdeu o braço no Double Dungeon', forca: 10, mana: 20, hp: 70 },
         { id: 'yoo_jinho_armor', nome: 'Yoo Jinho (Armadura Lendária)', rank: 'D', classe: 'Tanker', preco: 85,
-          desc: 'Equipado com armadura cara, mais resistente',
-          forca: 15, mana: 8, hp: 150 },
+          desc: 'Equipado com armadura cara, mais resistente', forca: 15, mana: 8, hp: 150 },
         { id: 'hwang_dongsuk', nome: 'Hwang Dongsuk', rank: 'C', classe: 'Tanker', preco: 120,
-          desc: 'Líder de esquadrão, cruel e interesseiro',
-          forca: 25, mana: 5, hp: 200 },
+          desc: 'Líder de esquadrão, cruel e interesseiro', forca: 25, mana: 5, hp: 200 },
         { id: 'park_beom_shik', nome: 'Park Beom-Shik', rank: 'C', classe: 'Fighter', preco: 110,
-          desc: 'Mercenário que busca dinheiro fácil',
-          forca: 30, mana: 5, hp: 150 },
+          desc: 'Mercenário que busca dinheiro fácil', forca: 30, mana: 5, hp: 150 },
         { id: 'cho_kyu_hwan', nome: 'Cho Kyu-Hwan', rank: 'C', classe: 'Mage', preco: 100,
-          desc: 'Mago do esquadrão de Dongsuk',
-          forca: 10, mana: 35, hp: 80 },
+          desc: 'Mago do esquadrão de Dongsuk', forca: 10, mana: 35, hp: 80 },
         { id: 'kang_taeshik', nome: 'Kang Taeshik', rank: 'B', classe: 'Assassin', preco: 200,
-          desc: 'Agente corrupto que matava criminosos, cruel',
-          forca: 45, mana: 10, hp: 180 },
+          desc: 'Agente corrupto que matava criminosos, cruel', forca: 45, mana: 10, hp: 180 },
         { id: 'kim_chul', nome: 'Kim Chul', rank: 'B', classe: 'Tanker', preco: 190,
-          desc: 'Tank da White Tiger, confiante mas arrogante',
-          forca: 30, mana: 5, hp: 300 },
+          desc: 'Tank da White Tiger, confiante mas arrogante', forca: 30, mana: 5, hp: 300 },
         { id: 'park_heejin', nome: 'Park Heejin', rank: 'B', classe: 'Mage', preco: 180,
-          desc: 'Maga com instintos de sobrevivência aguçados',
-          forca: 15, mana: 40, hp: 120 },
+          desc: 'Maga com instintos de sobrevivência aguçados', forca: 15, mana: 40, hp: 120 },
         { id: 'han_songyi_b', nome: 'Han Song-Yi (Treinada)', rank: 'B', classe: 'Mage', preco: 170,
-          desc: 'Versão mais experiente após incidentes',
-          forca: 15, mana: 35, hp: 100 },
+          desc: 'Versão mais experiente após incidentes', forca: 15, mana: 35, hp: 100 },
         { id: 'woo_jinchul', nome: 'Woo Jinchul', rank: 'A', classe: 'Tanker', preco: 350,
-          desc: 'Inspetor da Associação, força quase S-rank',
-          forca: 50, mana: 15, hp: 350 },
+          desc: 'Inspetor da Associação, força quase S-rank', forca: 50, mana: 15, hp: 350 },
         { id: 'kim_chul_a', nome: 'Kim Chul (A-rank)', rank: 'A', classe: 'Tanker', preco: 320,
-          desc: 'Versão mais forte, estrela da White Tiger',
-          forca: 60, mana: 8, hp: 450 },
+          desc: 'Versão mais forte, estrela da White Tiger', forca: 60, mana: 8, hp: 450 },
         { id: 'yoo_soohyun', nome: 'Yoo Soohyun', rank: 'A', classe: 'Mage', preco: 300,
-          desc: 'Maga de alto nível, irmã de Jinho',
-          forca: 20, mana: 60, hp: 150 },
+          desc: 'Maga de alto nível, irmã de Jinho', forca: 20, mana: 60, hp: 150 },
         { id: 'cha_hae_in', nome: 'Cha Hae-In', rank: 'S', classe: 'Fighter', preco: 800,
-          desc: 'Vice-mestra da Hunters Guild, força excepcional',
-          forca: 120, mana: 40, hp: 500 },
+          desc: 'Vice-mestra da Hunters Guild, força excepcional', forca: 120, mana: 40, hp: 500 },
         { id: 'choi_jong_in', nome: 'Choi Jong-In', rank: 'S', classe: 'Mage', preco: 750,
-          desc: 'Mestre da Hunters Guild, "O Hunter Supremo"',
-          forca: 30, mana: 120, hp: 300 },
+          desc: 'Mestre da Hunters Guild, "O Hunter Supremo"', forca: 30, mana: 120, hp: 300 },
         { id: 'baek_yoonho', nome: 'Baek Yoonho', rank: 'S', classe: 'Tanker', preco: 780,
-          desc: 'Mestre da White Tiger, pode se transformar',
-          forca: 100, mana: 20, hp: 600 },
+          desc: 'Mestre da White Tiger, pode se transformar', forca: 100, mana: 20, hp: 600 },
         { id: 'hwang_dongsoo', nome: 'Hwang Dong-Su', rank: 'S', classe: 'Fighter', preco: 820,
-          desc: 'Hunter S que traiu a Coreia, extremamente forte',
-          forca: 130, mana: 25, hp: 550 },
+          desc: 'Hunter S que traiu a Coreia, extremamente forte', forca: 130, mana: 25, hp: 550 },
         { id: 'go_gunhee', nome: 'Go Gunhee', rank: 'S', classe: 'Mage', preco: 700,
-          desc: 'Presidente da Associação, poder dos Rulers',
-          forca: 40, mana: 100, hp: 250 },
+          desc: 'Presidente da Associação, poder dos Rulers', forca: 40, mana: 100, hp: 250 },
         { id: 'sung_jinwoo', nome: 'Sung Jinwoo (Monarca)', rank: 'S+', classe: 'Fighter', preco: 2000,
-          desc: 'O Monarca das Sombras, poder absoluto',
-          forca: 300, mana: 200, hp: 1200 },
+          desc: 'O Monarca das Sombras, poder absoluto', forca: 300, mana: 200, hp: 1200 },
         { id: 'thomas_andre', nome: 'Thomas Andre', rank: 'S+', classe: 'Tanker', preco: 1800,
-          desc: 'National Level Hunter #1, "Golias"',
-          forca: 250, mana: 50, hp: 1500 },
+          desc: 'National Level Hunter #1, "Golias"', forca: 250, mana: 50, hp: 1500 },
         { id: 'liu_zhigang', nome: 'Liu Zhigang', rank: 'S+', classe: 'Fighter', preco: 1750,
-          desc: 'National Level Hunter #2, mais forte da China',
-          forca: 280, mana: 60, hp: 1100 },
+          desc: 'National Level Hunter #2, mais forte da China', forca: 280, mana: 60, hp: 1100 },
         { id: 'christopher_reed', nome: 'Christopher Reed', rank: 'S+', classe: 'Mage', preco: 1700,
-          desc: 'National Level Hunter #3, poder mágico imenso',
-          forca: 50, mana: 250, hp: 800 }
+          desc: 'National Level Hunter #3, poder mágico imenso', forca: 50, mana: 250, hp: 800 }
     ];
 
     const shadowBaseBonus = {
@@ -1239,10 +1253,6 @@
         if (player.hp > totalMaxHp) player.hp = totalMaxHp;
     }
 
-    function encontrarItemPorId(slot, id) {
-        return itemCatalog[slot].find(i => i.id === id);
-    }
-
     function regenerarDungeonSeNecessario(dungeonIdx) {
         let dungeon = dungeonInstances[dungeonIdx];
         if (!dungeon) return;
@@ -1250,7 +1260,7 @@
         if (todosMortos) {
             player.hp = totalMaxHp;
             addLog('✨ Bom trabalho! Você completou a masmorra!');
-            showMessage('Vitória!', 'Você completou a masmorra com sucesso!');
+            showMessage('Vitória!', 'Você completou a masmorra com sucesso!', false);
             dungeonComplete = true;
             currentDungeonIdx = null;
             player.currentDungeonRank = null;
@@ -1279,7 +1289,7 @@
         player.companions = [];
         player.currentDungeonRank = null;
         addLog('💔 Você morreu! Perdeu todas as gemas e todos os itens.');
-        showMessage('Derrota', 'Você morreu! Todos os itens e gemas foram perdidos.');
+        showMessage('Derrota', 'Você morreu! Todos os itens e gemas foram perdidos.', false);
     }
 
     function aplicarPenalidadeFuga() {
@@ -1334,10 +1344,16 @@
         }, 60000);
     }
 
-    function showMessage(title, text) {
+    function showMessage(title, text, isLevelUp = false) {
+        const msg = document.getElementById('messagePrompt');
         document.getElementById('messageTitle').innerText = title;
         document.getElementById('messageText').innerText = text;
-        document.getElementById('messagePrompt').classList.remove('hidden');
+        if (isLevelUp) {
+            msg.classList.add('levelup');
+        } else {
+            msg.classList.remove('levelup');
+        }
+        msg.classList.remove('hidden');
     }
 
     function renderPotionButtons() {
@@ -1622,6 +1638,8 @@
                     player.xpNext = Math.floor(player.xpNext * 1.5);
                     player.pontosStatus += 3;
                     addLog(`⬆️ Subiu para nível ${player.level}! Ganhou 3 pontos de status.`);
+                    // Notificação de level up com o novo design
+                    showMessage('NOTIFICATION', 'Leveled up!', true);
                 }
                 inCombat = false;
                 document.getElementById('combatActions').classList.add('hidden');
@@ -1751,9 +1769,18 @@
         refreshUI();
     }
 
+    function encontrarItemPorId(slot, id) {
+        return itemCatalog[slot].find(i => i.id === id);
+    }
+
     // Event listeners
     document.getElementById('btnSurgirInicial').addEventListener('click', () => {
         document.getElementById('startScreen').classList.add('hidden');
+        document.getElementById('instructionScreen').classList.remove('hidden');
+    });
+
+    document.getElementById('btnInstrucoesContinuar').addEventListener('click', () => {
+        document.getElementById('instructionScreen').classList.add('hidden');
         document.getElementById('creationScreen').classList.remove('hidden');
     });
 
