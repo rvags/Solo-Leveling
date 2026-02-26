@@ -2,26 +2,29 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Solo Leveling: Despertar das Sombras</title>
     <style>
-        /* (mesmo CSS anterior) */
+        /* Reset e base */
         * {
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         body {
-            margin: 0;
             min-height: 100vh;
             background: #1a0b2e;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
             position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: 10px;
         }
         .stars-bg {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -61,16 +64,15 @@
             100% { opacity: 0.9; }
         }
         #gameContainer {
-            width: 1200px;
-            max-width: 95vw;
-            height: 800px;
-            max-height: 90vh;
+            width: 100%;
+            max-width: 1400px;
+            min-height: 90vh;
             background: rgba(20, 5, 40, 0.8);
             backdrop-filter: blur(6px);
             border: 2px solid #a55aff;
             border-radius: 30px;
             box-shadow: 0 0 40px #9f4fdf;
-            padding: 20px;
+            padding: 15px;
             color: #f0e6ff;
             z-index: 10;
             display: flex;
@@ -82,7 +84,7 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
         .hidden {
             display: none !important;
@@ -91,15 +93,16 @@
             justify-content: center;
             align-items: center;
             text-align: center;
+            min-height: 80vh;
         }
         #startScreen h1 {
-            font-size: 5rem;
+            font-size: clamp(2.5rem, 10vw, 5rem);
             text-shadow: 0 0 20px #b300ff, 0 0 40px #7700ff;
             margin-bottom: 10px;
             letter-spacing: 5px;
         }
         .criador {
-            font-size: 1.8rem;
+            font-size: clamp(1rem, 4vw, 1.8rem);
             color: #ffd966;
             text-shadow: 0 0 15px #b266ff;
             margin-bottom: 40px;
@@ -109,14 +112,15 @@
             background: linear-gradient(145deg, #6a1f9e, #38006b);
             border: 3px solid #ca9eff;
             color: white;
-            font-size: 3rem;
+            font-size: clamp(2rem, 8vw, 3rem);
             font-weight: bold;
-            padding: 20px 60px;
+            padding: clamp(10px, 3vw, 20px) clamp(30px, 8vw, 60px);
             border-radius: 60px;
             cursor: pointer;
             box-shadow: 0 0 30px #b76eff;
             transition: 0.2s;
             text-transform: uppercase;
+            white-space: nowrap;
         }
         .surgir-btn:hover {
             transform: scale(1.1);
@@ -129,19 +133,18 @@
         }
         .creation-box {
             background: rgba(48, 12, 70, 0.9);
-            padding: 40px;
+            padding: clamp(20px, 5vw, 40px);
             border-radius: 40px;
             border: 2px solid #b77eff;
-            width: 500px;
-            max-width: 90%;
+            width: min(90%, 500px);
             text-align: center;
         }
         .creation-box h2 {
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
             margin-bottom: 30px;
         }
         .creation-box label {
-            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
             display: block;
             margin: 20px 0 10px;
         }
@@ -149,23 +152,29 @@
             background: #2e1047;
             border: 2px solid #a155e0;
             color: white;
-            font-size: 1.4rem;
+            font-size: clamp(1.2rem, 4vw, 1.4rem);
             padding: 8px 20px;
             border-radius: 40px;
-            width: 80%;
+            width: 100%;
+            max-width: 400px;
             margin-bottom: 20px;
         }
         .surgir-small {
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 5vw, 2rem);
             padding: 10px 40px;
             margin-top: 20px;
         }
         #gameScreen {
-            flex-direction: row;
-            gap: 15px;
+            flex-direction: column;
+        }
+        /* Layout responsivo: em telas grandes, linha; em pequenas, coluna */
+        @media (min-width: 1024px) {
+            #gameScreen {
+                flex-direction: row;
+            }
         }
         #mapPanel {
-            width: 30%;
+            width: 100%;
             background: rgba(25, 5, 45, 0.9);
             border-radius: 30px;
             padding: 15px;
@@ -173,10 +182,17 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
+            max-height: 400px;
+        }
+        @media (min-width: 1024px) {
+            #mapPanel {
+                width: 30%;
+                max-height: none;
+            }
         }
         #mapPanel h3 {
             text-align: center;
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 5vw, 2rem);
             margin: 0 0 10px;
             border-bottom: 2px solid #b77eff;
         }
@@ -213,14 +229,14 @@
             border-color: #9f6fe0;
         }
         .area-name {
-            font-size: 1.8rem;
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
             font-weight: bold;
         }
         .area-desc {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 3vw, 1.2rem);
         }
         .area-req {
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: #ffaa00;
             margin-top: 5px;
         }
@@ -228,7 +244,7 @@
             background: #221134;
             border-radius: 20px;
             padding: 10px;
-            max-height: 150px;
+            max-height: 200px;
             overflow-y: auto;
             margin-top: 5px;
         }
@@ -241,12 +257,13 @@
             justify-content: space-between;
             border: 1px solid #aa88ff;
             cursor: pointer;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
         }
         .enemy-entry:hover {
             background: #6d44a3;
         }
         #infoPanel {
-            width: 45%;
+            width: 100%;
             background: rgba(30, 10, 50, 0.9);
             border-radius: 30px;
             padding: 15px;
@@ -255,12 +272,17 @@
             flex-direction: column;
             gap: 10px;
         }
+        @media (min-width: 1024px) {
+            #infoPanel {
+                width: 45%;
+            }
+        }
         /* Painel de estatísticas */
         #playerStats {
             background: #221134;
             border-radius: 20px;
             padding: 15px;
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 3vw, 1.2rem);
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -269,12 +291,14 @@
             display: flex;
             justify-content: space-between;
             gap: 10px;
+            flex-wrap: wrap;
         }
         .stat-item {
             background: #2e154a;
             border-radius: 12px;
             padding: 8px 12px;
-            flex: 1;
+            flex: 1 1 auto;
+            min-width: 120px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -283,11 +307,11 @@
         .stat-value {
             font-weight: bold;
             color: #ffd966;
-            font-size: 1.4rem;
+            font-size: clamp(1.2rem, 4vw, 1.4rem);
         }
         #statGemas {
             color: #ffaa00;
-            font-size: 1.6rem;
+            font-size: clamp(1.4rem, 5vw, 1.6rem);
         }
         #xpBarContainer {
             background: #0d0321;
@@ -314,7 +338,7 @@
             padding: 15px;
             height: 150px;
             overflow-y: auto;
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 3vw, 1.2rem);
             border: 1px solid #b28aff;
         }
         #combatActions, #shadowRecruit {
@@ -327,12 +351,14 @@
             background: #4a2a6b;
             border: 2px solid #c69cff;
             color: white;
-            font-size: 1.3rem;
-            padding: 8px 20px;
+            font-size: clamp(1rem, 4vw, 1.3rem);
+            padding: 8px 15px;
             border-radius: 40px;
             cursor: pointer;
             font-weight: bold;
             transition: 0.2s;
+            flex: 1 1 auto;
+            min-width: 120px;
         }
         .btn:hover:not(:disabled) {
             background: #7a4fb3;
@@ -343,7 +369,7 @@
             cursor: not-allowed;
         }
         #rightPanel {
-            width: 25%;
+            width: 100%;
             background: rgba(25, 5, 45, 0.9);
             border-radius: 30px;
             padding: 15px;
@@ -352,12 +378,19 @@
             flex-direction: column;
             gap: 15px;
             overflow-y: auto;
+            max-height: 500px;
+        }
+        @media (min-width: 1024px) {
+            #rightPanel {
+                width: 25%;
+                max-height: none;
+            }
         }
         #shadowList {
             background: #1f0a33;
             border-radius: 20px;
             padding: 10px;
-            max-height: 150px;
+            max-height: 200px;
             overflow-y: auto;
         }
         .shadow-item {
@@ -369,6 +402,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
         }
         .shadow-info {
             display: flex;
@@ -395,18 +429,21 @@
         }
         .shop-tabs {
             display: flex;
-            gap: 10px;
+            gap: 5px;
             margin-bottom: 10px;
+            flex-wrap: wrap;
         }
         .shop-tab {
-            flex: 1;
+            flex: 1 1 auto;
             background: #2d1545;
             border: 2px solid #b471ff;
             border-radius: 20px;
-            padding: 8px;
+            padding: 8px 5px;
             text-align: center;
             cursor: pointer;
             transition: 0.2s;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            min-width: 70px;
         }
         .shop-tab.active {
             background: #7b3fb0;
@@ -416,7 +453,7 @@
             background: #2d1545;
             border-radius: 20px;
             padding: 10px;
-            max-height: 250px;
+            max-height: 300px;
             overflow-y: auto;
             display: none;
         }
@@ -444,10 +481,13 @@
             padding: 5px;
             border-radius: 8px;
             margin-bottom: 5px;
+            gap: 5px;
+            flex-wrap: wrap;
         }
         .item-info {
             font-size: 0.9rem;
             flex: 1;
+            min-width: 150px;
         }
         .btn-equip, .btn-contratar, .btn-comprar-pocao, .btn-comprar-gemas {
             font-size: 0.9rem;
@@ -466,6 +506,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
         .companion-info {
             flex: 1;
@@ -478,7 +520,7 @@
             color: #aaffaa;
         }
         #gemsDisplay {
-            font-size: 1.6rem;
+            font-size: clamp(1.4rem, 5vw, 1.6rem);
             color: #ffd966;
             text-align: center;
         }
@@ -523,30 +565,230 @@
             cursor: not-allowed;
         }
         #dungeonPrompt, #messagePrompt {
-            position: absolute;
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             background: #2d1545;
             border: 3px solid #ffd966;
             border-radius: 30px;
-            padding: 30px;
+            padding: 20px;
             text-align: center;
-            z-index: 100;
+            z-index: 1000;
             box-shadow: 0 0 50px #000;
+            width: min(90%, 500px);
+            max-width: 90vw;
         }
         #dungeonPrompt h2, #messagePrompt h2 {
             margin-top: 0;
             color: #ffd966;
+            font-size: clamp(1.5rem, 6vw, 2rem);
+        }
+        #dungeonPrompt p, #messagePrompt p {
+            font-size: clamp(1rem, 4vw, 1.2rem);
         }
         #dungeonPrompt button, #messagePrompt button {
             margin: 10px;
-            font-size: 2rem;
+            font-size: clamp(1.2rem, 5vw, 2rem);
+            padding: 8px 20px;
         }
         /* Estilo para o timer de validação */
         #pixTimer {
             color: #ffaa00;
             font-weight: bold;
+        }
+
+        /* ===== ESTILIZAÇÃO DOS MONSTROS ===== */
+        :root {
+          --rank-e: #8e8e8e;      /* Cinza - Rank E */
+          --rank-d: #4caf50;      /* Verde - Rank D */
+          --rank-c: #2196f3;      /* Azul - Rank C */
+          --rank-b: #9c27b0;      /* Roxo - Rank B */
+          --rank-a: #ff9800;      /* Laranja - Rank A */
+          --rank-s: #f44336;      /* Vermelho - Rank S */
+          --rank-sp: #ffd700;     /* Dourado - Rank S+ */
+          --sombra-bg: #1a0f2a;
+          --sombra-borda: #6a4c9c;
+        }
+
+        .enemy-entry {
+          position: relative;
+          padding-left: 40px !important;
+          border-left: 5px solid transparent;
+          transition: all 0.2s;
+          font-weight: 500;
+          background: linear-gradient(145deg, #2a1742, #1f0e32);
+          border-radius: 12px;
+          margin: 6px 0;
+        }
+
+        .enemy-entry::before {
+          content: "👾";
+          position: absolute;
+          left: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 1.6rem;
+          filter: drop-shadow(0 0 4px currentColor);
+        }
+
+        .enemy-entry[data-nome*="Goblin"]::before { content: "👹"; }
+        .enemy-entry[data-nome*="Cobra"]::before,
+        .enemy-entry[data-nome*="Kasaka"]::before { content: "🐍"; }
+        .enemy-entry[data-nome*="Lobo"]::before,
+        .enemy-entry[data-nome*="Licantropo"]::before { content: "🐺"; }
+        .enemy-entry[data-nome*="Aranha"]::before { content: "🕷️"; }
+        .enemy-entry[data-nome*="Esqueleto"]::before { content: "💀"; }
+        .enemy-entry[data-nome*="Cavaleiro"]::before,
+        .enemy-entry[data-nome*="Igris"]::before { content: "⚔️"; }
+        .enemy-entry[data-nome*="Orc"]::before { content: "👺"; }
+        .enemy-entry[data-nome*="Golem"]::before { content: "🗿"; }
+        .enemy-entry[data-nome*="Yeti"]::before,
+        .enemy-entry[data-nome*="Urso"]::before { content: "🐻"; }
+        .enemy-entry[data-nome*="Dragão"]::before,
+        .enemy-entry[data-nome*="Kamish"]::before { content: "🐉"; }
+        .enemy-entry[data-nome*="Beru"]::before,
+        .enemy-entry[data-nome*="Bellion"]::before { content: "👑"; }
+
+        .enemy-entry[data-rank="E"] { border-left-color: var(--rank-e); }
+        .enemy-entry[data-rank="D"] { border-left-color: var(--rank-d); }
+        .enemy-entry[data-rank="C"] { border-left-color: var(--rank-c); }
+        .enemy-entry[data-rank="B"] { border-left-color: var(--rank-b); }
+        .enemy-entry[data-rank="A"] { border-left-color: var(--rank-a); }
+        .enemy-entry[data-rank="S"] { border-left-color: var(--rank-s); }
+        .enemy-entry[data-rank="S+"] { border-left-color: var(--rank-sp); }
+
+        .enemy-entry.is-boss {
+          background: linear-gradient(145deg, #4a2a5a, #2a1a3a);
+          box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+          border: 2px solid gold;
+        }
+        .enemy-entry.is-boss::before {
+          content: "👑";
+          filter: drop-shadow(0 0 8px gold);
+        }
+
+        .enemy-entry[style*="opacity:0.5"] {
+          filter: grayscale(1) opacity(0.7);
+          text-decoration: line-through;
+          background: #2a1a2a;
+        }
+        .enemy-entry[style*="opacity:0.5"]::before {
+          content: "💀";
+          opacity: 0.8;
+        }
+
+        #shadowList .shadow-item {
+          background: linear-gradient(145deg, #2d1a40, #1a0f2a);
+          border: 1px solid var(--sombra-borda);
+          border-radius: 16px;
+          padding: 12px;
+          margin: 8px 0;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+          position: relative;
+          transition: 0.2s;
+        }
+        #shadowList .shadow-item:hover {
+          transform: scale(1.02);
+          border-color: #b386ff;
+          box-shadow: 0 0 15px #8a4cff;
+        }
+        .shadow-info .shadow-name {
+          color: #d4b5ff;
+          text-shadow: 0 0 8px #8a4cff;
+          font-size: 1.2rem;
+        }
+        .shadow-bonus {
+          background: #2a1e3a;
+          padding: 4px 8px;
+          border-radius: 20px;
+          border: 1px solid #6a4c9c;
+          font-size: 0.9rem;
+        }
+        .shadow-item::before {
+          content: "🌑";
+          position: absolute;
+          right: 10px;
+          top: 10px;
+          font-size: 2rem;
+          opacity: 0.3;
+          filter: drop-shadow(0 0 5px #a55aff);
+        }
+
+        .companion-item {
+          background: #1e1230;
+          border: 1px solid #5e3a8a;
+          border-radius: 20px;
+          padding: 12px;
+          margin: 8px 0;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .companion-item::before {
+          content: "👤";
+          font-size: 2rem;
+          filter: drop-shadow(0 0 4px #5e3a8a);
+        }
+        .companion-item[data-classe="Mage"]::before { content: "🔮"; }
+        .companion-item[data-classe="Tanker"]::before { content: "🛡️"; }
+        .companion-item[data-classe="Healer"]::before { content: "✨"; }
+        .companion-item[data-classe="Assassin"]::before { content: "🗡️"; }
+        .companion-item[data-classe="Fighter"]::before { content: "⚡"; }
+        .companion-name {
+          color: #ffd966;
+          font-size: 1.2rem;
+        }
+        .companion-details {
+          color: #b0b0ff;
+          font-size: 0.9rem;
+        }
+
+        #combatActions .btn {
+          background: #4a1f6a;
+          border: 2px solid #b77eff;
+          color: white;
+          transition: 0.2s;
+          position: relative;
+          overflow: hidden;
+        }
+        #combatActions .btn:hover {
+          background: #6a2f8a;
+          box-shadow: 0 0 20px #b77eff;
+        }
+        #combatActions .btn:active {
+          transform: scale(0.95);
+        }
+        #btnAtacar::before {
+          content: "⚔️";
+          margin-right: 8px;
+        }
+        #btnFugir::before {
+          content: "🏃";
+          margin-right: 8px;
+        }
+        #btnTornarSombra::before {
+          content: "🌑";
+          margin-right: 8px;
+        }
+        #btnEliminar::before {
+          content: "💔";
+          margin-right: 8px;
+        }
+
+        .enemy-entry::after {
+          content: "";
+          position: absolute;
+          bottom: 4px;
+          left: 40px;
+          width: calc(100% - 50px);
+          height: 4px;
+          background: #333;
+          border-radius: 4px;
+        }
+        .enemy-entry[data-hp]::after {
+          background: linear-gradient(90deg, #ff4d4d, #ffaa00);
+          width: calc((attr(data-hp) / attr(data-maxhp)) * (100% - 50px));
         }
     </style>
 </head>
@@ -593,10 +835,9 @@
                     <div class="stat-item">PONTOS <span class="stat-value" id="statPontos">0</span></div>
                     <div class="stat-item">GEMAS <span class="stat-value" id="statGemas">0</span></div>
                 </div>
-                <!-- Nova linha para o RANK -->
                 <div class="stat-row">
                     <div class="stat-item">RANK <span class="stat-value" id="statRank">E</span></div>
-                    <div class="stat-item"></div> <!-- vazio para manter duas colunas -->
+                    <div class="stat-item"></div>
                 </div>
                 <div id="xpBarContainer">
                     <div id="xpBarLabel">
@@ -625,7 +866,6 @@
                 <h4>👥 COMPANHEIROS NA MASMORRA</h4>
                 <div id="activeCompanions"></div>
             </div>
-            <!-- Status da poção -->
             <div id="potionStatus" class="hidden">
                 <span>Poções:</span>
                 <div id="potionButtons"></div>
@@ -634,7 +874,6 @@
 
         <!-- PAINEL DIREITO -->
         <div id="rightPanel">
-            <!-- Botão Loja de Gemas -->
             <button id="btnLojaGemas" class="btn">💎 LOJA DE GEMAS</button>
             
             <div id="gemsDisplay">💎 0</div>
@@ -681,7 +920,6 @@
                     </div>
                 </div>
 
-                <!-- Aba: Loja de Gemas -->
                 <div id="shopGems" class="shop-panel">
                     <h4>💎 COMPRAR GEMAS</h4>
                     <div class="item-row">
@@ -716,7 +954,6 @@
                 <div id="shadowList"></div>
             </div>
 
-            <!-- Botão SUBIR RANKING na parte inferior -->
             <button id="btnSubirRanking" class="btn">⬆️ SUBIR RANKING</button>
         </div>
     </div>
@@ -787,17 +1024,13 @@
         ]
     };
 
-    // ---------- CATÁLOGO DE COMPANHEIROS ----------
     const companionCatalog = [
-        // Rank E
         { id: 'han_songyi_e', nome: 'Han Song-Yi', rank: 'E', classe: 'Mage', preco: 30,
           desc: 'Estudante rank-E, sonha ser hunter mas é inexperiente',
           forca: 5, mana: 15, hp: 50 },
         { id: 'yoo_jinho_base', nome: 'Yoo Jinho (Base)', rank: 'E', classe: 'Tanker', preco: 35,
           desc: 'Herdeiro da Yoojin Construction, leal mas sem experiência',
           forca: 8, mana: 5, hp: 80 },
-        
-        // Rank D
         { id: 'ju_hee', nome: 'Ju-Hee', rank: 'D', classe: 'Healer', preco: 60,
           desc: 'Healer B-rank que se aposentou após trauma',
           forca: 2, mana: 25, hp: 40 },
@@ -807,8 +1040,6 @@
         { id: 'yoo_jinho_armor', nome: 'Yoo Jinho (Armadura Lendária)', rank: 'D', classe: 'Tanker', preco: 85,
           desc: 'Equipado com armadura cara, mais resistente',
           forca: 15, mana: 8, hp: 150 },
-        
-        // Rank C
         { id: 'hwang_dongsuk', nome: 'Hwang Dongsuk', rank: 'C', classe: 'Tanker', preco: 120,
           desc: 'Líder de esquadrão, cruel e interesseiro',
           forca: 25, mana: 5, hp: 200 },
@@ -818,8 +1049,6 @@
         { id: 'cho_kyu_hwan', nome: 'Cho Kyu-Hwan', rank: 'C', classe: 'Mage', preco: 100,
           desc: 'Mago do esquadrão de Dongsuk',
           forca: 10, mana: 35, hp: 80 },
-        
-        // Rank B
         { id: 'kang_taeshik', nome: 'Kang Taeshik', rank: 'B', classe: 'Assassin', preco: 200,
           desc: 'Agente corrupto que matava criminosos, cruel',
           forca: 45, mana: 10, hp: 180 },
@@ -832,8 +1061,6 @@
         { id: 'han_songyi_b', nome: 'Han Song-Yi (Treinada)', rank: 'B', classe: 'Mage', preco: 170,
           desc: 'Versão mais experiente após incidentes',
           forca: 15, mana: 35, hp: 100 },
-        
-        // Rank A
         { id: 'woo_jinchul', nome: 'Woo Jinchul', rank: 'A', classe: 'Tanker', preco: 350,
           desc: 'Inspetor da Associação, força quase S-rank',
           forca: 50, mana: 15, hp: 350 },
@@ -843,8 +1070,6 @@
         { id: 'yoo_soohyun', nome: 'Yoo Soohyun', rank: 'A', classe: 'Mage', preco: 300,
           desc: 'Maga de alto nível, irmã de Jinho',
           forca: 20, mana: 60, hp: 150 },
-        
-        // Rank S
         { id: 'cha_hae_in', nome: 'Cha Hae-In', rank: 'S', classe: 'Fighter', preco: 800,
           desc: 'Vice-mestra da Hunters Guild, força excepcional',
           forca: 120, mana: 40, hp: 500 },
@@ -860,8 +1085,6 @@
         { id: 'go_gunhee', nome: 'Go Gunhee', rank: 'S', classe: 'Mage', preco: 700,
           desc: 'Presidente da Associação, poder dos Rulers',
           forca: 40, mana: 100, hp: 250 },
-        
-        // Rank S+ (National Level)
         { id: 'sung_jinwoo', nome: 'Sung Jinwoo (Monarca)', rank: 'S+', classe: 'Fighter', preco: 2000,
           desc: 'O Monarca das Sombras, poder absoluto',
           forca: 300, mana: 200, hp: 1200 },
@@ -876,7 +1099,6 @@
           forca: 50, mana: 250, hp: 800 }
     ];
 
-    // Bônus base por rank de sombra (valor por nível)
     const shadowBaseBonus = {
         'E': { forca: 5, hp: 25 },
         'D': { forca: 10, hp: 50 },
@@ -887,7 +1109,6 @@
         'S+': { forca: 320, hp: 1600 }
     };
 
-    // Preço base de venda das sombras
     const shadowBasePrice = {
         'E': 10,
         'D': 30,
@@ -898,7 +1119,6 @@
         'S+': 7290
     };
 
-    // ---------- ESTADO GLOBAL ----------
     let player = {
         name: '',
         level: 1,
@@ -906,20 +1126,10 @@
         xpNext: 100,
         rank: 'E',
         gems: 50,
-        base: {
-            forca: 10,
-            mana: 0,
-            maxHp: 100
-        },
+        base: { forca: 10, mana: 0, maxHp: 100 },
         hp: 100,
         shadows: [],
-        equipment: {
-            cabeca: null,
-            maoD: null,
-            maoE: null,
-            tronco: null,
-            pernas: null
-        },
+        equipment: { cabeca: null, maoD: null, maoE: null, tronco: null, pernas: null },
         inventario: [],
         pontosStatus: 0,
         companions: [],
@@ -927,152 +1137,32 @@
         potions: { '10': 0, '25': 0, '50': 0, '75': 0, '100': 0 }
     };
 
-    // Totais calculados
     let totalForca = player.base.forca;
     let totalMana = player.base.mana;
     let totalMaxHp = player.base.maxHp;
 
-    // Multiplicadores de rank (base 5, exponencial)
-    const rankMultiplier = {
-        'E': 1,
-        'D': 5,
-        'C': 25,
-        'B': 125,
-        'A': 625,
-        'S': 3125,
-        'S+': 15625
-    };
-
-    // Variável para controlar se a masmorra atual foi completada
+    const rankMultiplier = { 'E': 1, 'D': 5, 'C': 25, 'B': 125, 'A': 625, 'S': 3125, 'S+': 15625 };
     let dungeonComplete = false;
 
-    // ---------- MASMORRAS (igual ao anterior) ----------
     const dungeons = [
-        {
-            nome: '🌾 Planície dos Goblins',
-            bossRank: 'E',
-            mobs: [
-                { nome: 'Goblin Rasteiro', rank: 'E' },
-                { nome: 'Goblin Guerreiro', rank: 'E' }
-            ],
-            boss: { nome: 'Chefe Goblin', rank: 'E' }
-        },
-        {
-            nome: '🐍 Caverna de Kasaka',
-            bossRank: 'D',
-            mobs: [
-                { nome: 'Cobra Venenosa', rank: 'E' },
-                { nome: 'Cobra Gigante', rank: 'E' }
-            ],
-            boss: { nome: 'Kasaka', rank: 'D' }
-        },
-        {
-            nome: '🌲 Floresta dos Licantropos',
-            bossRank: 'C',
-            mobs: [
-                { nome: 'Lobo Sombrio', rank: 'D' },
-                { nome: 'Esqueleto Guerreiro', rank: 'D' },
-                { nome: 'Aranha Gigante', rank: 'D' }
-            ],
-            boss: { nome: 'Licantropo Alfa', rank: 'C' }
-        },
-        {
-            nome: '❄️ Tundra de Gel',
-            bossRank: 'B',
-            mobs: [
-                { nome: 'Urso de Gelo Filhote', rank: 'C' },
-                { nome: 'Centopéia de Gelo', rank: 'C' },
-                { nome: 'Yeti', rank: 'C' }
-            ],
-            boss: { nome: 'Urso de Gelo Ancestral', rank: 'B' }
-        },
-        {
-            nome: '🔥 Fortaleza do Vulcão',
-            bossRank: 'A',
-            mobs: [
-                { nome: 'Orc Vermelho', rank: 'B' },
-                { nome: 'Mago Orc', rank: 'B' },
-                { nome: 'Golem de Lava', rank: 'B' }
-            ],
-            boss: { nome: 'Vulcan', rank: 'A' }
-        },
-        {
-            nome: '🏰 Castelo de Igris',
-            bossRank: 'S',
-            mobs: [
-                { nome: 'Cavaleiro Negro', rank: 'A' },
-                { nome: 'Cavaleiro de Elite', rank: 'A' },
-                { nome: 'Feiticeiro das Sombras', rank: 'A' },
-                { nome: 'Guerreiro Esqueleto', rank: 'A' }
-            ],
-            boss: { nome: 'Igris', rank: 'S' }
-        },
-        {
-            nome: '👑 Trono de Kamish',
-            bossRank: 'S+',
-            mobs: [
-                { nome: 'Beru', rank: 'S' },
-                { nome: 'Bellion', rank: 'S' },
-                { nome: 'Comandante das Sombras', rank: 'S' }
-            ],
-            boss: { nome: 'Kamish, o Destruidor', rank: 'S+' }
-        },
-        // Novas masmorras
-        {
-            nome: '🕷️ Toca da Aranha Gigante',
-            bossRank: 'C',
-            mobs: [
-                { nome: 'Aranha Pequena', rank: 'E' },
-                { nome: 'Aranha Venenosa', rank: 'D' }
-            ],
-            boss: { nome: 'Rainha Aranha', rank: 'C' }
-        },
-        {
-            nome: '⚰️ Cripta do Cavaleiro da Morte',
-            bossRank: 'A',
-            mobs: [
-                { nome: 'Esqueleto Guerreiro', rank: 'B' },
-                { nome: 'Cavaleiro Espectral', rank: 'B' },
-                { nome: 'Lich Menor', rank: 'B' }
-            ],
-            boss: { nome: 'Cavaleiro da Morte', rank: 'A' }
-        },
-        {
-            nome: '🏔️ Pico do Dragão de Gelo',
-            bossRank: 'S',
-            mobs: [
-                { nome: 'Draconiano', rank: 'A' },
-                { nome: 'Elemental de Gelo', rank: 'A' },
-                { nome: 'Gigante de Gelo', rank: 'A' }
-            ],
-            boss: { nome: 'Dragão de Gelo', rank: 'S' }
-        },
-        {
-            nome: '🌋 Cratera do Titã',
-            bossRank: 'B',
-            mobs: [
-                { nome: 'Elemental de Fogo', rank: 'C' },
-                { nome: 'Golem de Rocha', rank: 'C' },
-                { nome: 'Salamandra', rank: 'C' }
-            ],
-            boss: { nome: 'Titã de Pedra', rank: 'B' }
-        },
-        {
-            nome: '🌑 Templo das Sombras',
-            bossRank: 'S+',
-            mobs: [
-                { nome: 'Sombra Espectral', rank: 'S' },
-                { nome: 'Cavaleiro Sombrio', rank: 'S' }
-            ],
-            boss: { nome: 'Monarca das Sombras', rank: 'S+' }
-        }
+        { nome: '🌾 Planície dos Goblins', bossRank: 'E', mobs: [ { nome: 'Goblin Rasteiro', rank: 'E' }, { nome: 'Goblin Guerreiro', rank: 'E' } ], boss: { nome: 'Chefe Goblin', rank: 'E' } },
+        { nome: '🐍 Caverna de Kasaka', bossRank: 'D', mobs: [ { nome: 'Cobra Venenosa', rank: 'E' }, { nome: 'Cobra Gigante', rank: 'E' } ], boss: { nome: 'Kasaka', rank: 'D' } },
+        { nome: '🌲 Floresta dos Licantropos', bossRank: 'C', mobs: [ { nome: 'Lobo Sombrio', rank: 'D' }, { nome: 'Esqueleto Guerreiro', rank: 'D' }, { nome: 'Aranha Gigante', rank: 'D' } ], boss: { nome: 'Licantropo Alfa', rank: 'C' } },
+        { nome: '❄️ Tundra de Gel', bossRank: 'B', mobs: [ { nome: 'Urso de Gelo Filhote', rank: 'C' }, { nome: 'Centopéia de Gelo', rank: 'C' }, { nome: 'Yeti', rank: 'C' } ], boss: { nome: 'Urso de Gelo Ancestral', rank: 'B' } },
+        { nome: '🔥 Fortaleza do Vulcão', bossRank: 'A', mobs: [ { nome: 'Orc Vermelho', rank: 'B' }, { nome: 'Mago Orc', rank: 'B' }, { nome: 'Golem de Lava', rank: 'B' } ], boss: { nome: 'Vulcan', rank: 'A' } },
+        { nome: '🏰 Castelo de Igris', bossRank: 'S', mobs: [ { nome: 'Cavaleiro Negro', rank: 'A' }, { nome: 'Cavaleiro de Elite', rank: 'A' }, { nome: 'Feiticeiro das Sombras', rank: 'A' }, { nome: 'Guerreiro Esqueleto', rank: 'A' } ], boss: { nome: 'Igris', rank: 'S' } },
+        { nome: '👑 Trono de Kamish', bossRank: 'S+', mobs: [ { nome: 'Beru', rank: 'S' }, { nome: 'Bellion', rank: 'S' }, { nome: 'Comandante das Sombras', rank: 'S' } ], boss: { nome: 'Kamish, o Destruidor', rank: 'S+' } },
+        { nome: '🕷️ Toca da Aranha Gigante', bossRank: 'C', mobs: [ { nome: 'Aranha Pequena', rank: 'E' }, { nome: 'Aranha Venenosa', rank: 'D' } ], boss: { nome: 'Rainha Aranha', rank: 'C' } },
+        { nome: '⚰️ Cripta do Cavaleiro da Morte', bossRank: 'A', mobs: [ { nome: 'Esqueleto Guerreiro', rank: 'B' }, { nome: 'Cavaleiro Espectral', rank: 'B' }, { nome: 'Lich Menor', rank: 'B' } ], boss: { nome: 'Cavaleiro da Morte', rank: 'A' } },
+        { nome: '🏔️ Pico do Dragão de Gelo', bossRank: 'S', mobs: [ { nome: 'Draconiano', rank: 'A' }, { nome: 'Elemental de Gelo', rank: 'A' }, { nome: 'Gigante de Gelo', rank: 'A' } ], boss: { nome: 'Dragão de Gelo', rank: 'S' } },
+        { nome: '🌋 Cratera do Titã', bossRank: 'B', mobs: [ { nome: 'Elemental de Fogo', rank: 'C' }, { nome: 'Golem de Rocha', rank: 'C' }, { nome: 'Salamandra', rank: 'C' } ], boss: { nome: 'Titã de Pedra', rank: 'B' } },
+        { nome: '🌑 Templo das Sombras', bossRank: 'S+', mobs: [ { nome: 'Sombra Espectral', rank: 'S' }, { nome: 'Cavaleiro Sombrio', rank: 'S' } ], boss: { nome: 'Monarca das Sombras', rank: 'S+' } }
     ];
 
     function gerarInimigosDungeon(dungeonIdx) {
         let dungeon = dungeons[dungeonIdx];
         let lista = [];
         let bossMult = rankMultiplier[dungeon.bossRank];
-        
         dungeon.mobs.forEach((mob, i) => {
             let mult = rankMultiplier[mob.rank];
             let hp = 30 * mult * (1 + i * 0.1);
@@ -1080,56 +1170,31 @@
             let xp = 20 * mult;
             let gem = 5 * mult;
             lista.push({
-                nome: mob.nome,
-                rank: mob.rank,
-                hp: Math.floor(hp),
-                maxHp: Math.floor(hp),
-                forca: Math.floor(forca),
-                xp: Math.floor(xp),
-                gem: Math.floor(gem),
-                vivo: true,
-                isBoss: false
+                nome: mob.nome, rank: mob.rank, hp: Math.floor(hp), maxHp: Math.floor(hp),
+                forca: Math.floor(forca), xp: Math.floor(xp), gem: Math.floor(gem), vivo: true, isBoss: false
             });
         });
-        
         let bossHp = 30 * bossMult * 1.5;
         let bossForca = 5 * bossMult * 1.5;
         let bossXp = 20 * bossMult * 1.5;
         let bossGem = 5 * bossMult * 1.5;
         lista.push({
-            nome: dungeon.boss.nome,
-            rank: dungeon.boss.rank,
-            hp: Math.floor(bossHp),
-            maxHp: Math.floor(bossHp),
-            forca: Math.floor(bossForca),
-            xp: Math.floor(bossXp),
-            gem: Math.floor(bossGem),
-            vivo: true,
-            isBoss: true
+            nome: dungeon.boss.nome, rank: dungeon.boss.rank, hp: Math.floor(bossHp), maxHp: Math.floor(bossHp),
+            forca: Math.floor(bossForca), xp: Math.floor(bossXp), gem: Math.floor(bossGem), vivo: true, isBoss: true
         });
-        
         return lista;
     }
 
-    let dungeonInstances = dungeons.map((d, idx) => ({
-        nome: d.nome,
-        rank: d.bossRank,
-        inimigos: gerarInimigosDungeon(idx)
-    }));
+    let dungeonInstances = dungeons.map((d, idx) => ({ nome: d.nome, rank: d.bossRank, inimigos: gerarInimigosDungeon(idx) }));
 
     function getShadowBonus(shadow) {
         let base = shadowBaseBonus[shadow.rank] || { forca: 0, hp: 0 };
-        return {
-            forca: base.forca * shadow.level,
-            hp: base.hp * shadow.level
-        };
+        return { forca: base.forca * shadow.level, hp: base.hp * shadow.level };
     }
 
     function darXPSombras(xpGanho) {
         if (player.shadows.length === 0) return;
-        let xpPorSombra = Math.floor(xpGanho / player.shadows.length);
-        if (xpPorSombra < 1) xpPorSombra = 1;
-        
+        let xpPorSombra = Math.floor(xpGanho / player.shadows.length) || 1;
         player.shadows.forEach(shadow => {
             shadow.xp += xpPorSombra;
             while (shadow.xp >= shadow.xpNext) {
@@ -1148,7 +1213,7 @@
         for (let slot in player.equipment) {
             let itemId = player.equipment[slot];
             if (itemId) {
-                let item = encontrarItemPorId(slot, itemId);
+                let item = itemCatalog[slot].find(i => i.id === itemId);
                 if (item) {
                     totalForca += item.forca || 0;
                     totalMana += item.mana || 0;
@@ -1210,9 +1275,7 @@
     function aplicarPenalidadeMorte() {
         player.gems = 0;
         player.inventario = [];
-        for (let slot in player.equipment) {
-            player.equipment[slot] = null;
-        }
+        for (let slot in player.equipment) player.equipment[slot] = null;
         player.companions = [];
         player.currentDungeonRank = null;
         addLog('💔 Você morreu! Perdeu todas as gemas e todos os itens.');
@@ -1228,24 +1291,11 @@
     }
 
     function contratarCompanheiro(companionId) {
-        if (inCombat) {
-            addLog('Não pode contratar durante combate.');
-            return;
-        }
-        
+        if (inCombat) { addLog('Não pode contratar durante combate.'); return; }
         let companion = companionCatalog.find(c => c.id === companionId);
         if (!companion) return;
-        
-        if (player.companions.length >= 5) {
-            addLog('Limite de 5 companheiros por masmorra atingido!');
-            return;
-        }
-        
-        if (player.gems < companion.preco) {
-            addLog('Gemas insuficientes!');
-            return;
-        }
-        
+        if (player.companions.length >= 5) { addLog('Limite de 5 companheiros por masmorra atingido!'); return; }
+        if (player.gems < companion.preco) { addLog('Gemas insuficientes!'); return; }
         player.gems -= companion.preco;
         player.companions.push({ ...companion });
         addLog(`✅ Contratou ${companion.nome} (${companion.rank}) para esta masmorra.`);
@@ -1253,15 +1303,9 @@
     }
 
     function comprarPocao(tipo) {
-        if (inCombat) {
-            addLog('Não pode comprar durante combate.');
-            return;
-        }
-        let preco = parseInt(tipo) === 10 ? 1000 : parseInt(tipo) === 25 ? 2500 : parseInt(tipo) === 50 ? 5000 : parseInt(tipo) === 75 ? 7500 : 10000;
-        if (player.gems < preco) {
-            addLog('Gemas insuficientes!');
-            return;
-        }
+        if (inCombat) { addLog('Não pode comprar durante combate.'); return; }
+        let preco = tipo == 10 ? 1000 : tipo == 25 ? 2500 : tipo == 50 ? 5000 : tipo == 75 ? 7500 : 10000;
+        if (player.gems < preco) { addLog('Gemas insuficientes!'); return; }
         player.gems -= preco;
         player.potions[tipo]++;
         addLog(`🧪 Você comprou uma Poção de ${tipo}%.`);
@@ -1269,14 +1313,8 @@
     }
 
     function usarPocao(tipo) {
-        if (inCombat) {
-            addLog('Não pode usar poção em combate.');
-            return;
-        }
-        if (player.potions[tipo] <= 0) {
-            addLog('Você não tem poções desse tipo!');
-            return;
-        }
+        if (inCombat) { addLog('Não pode usar poção em combate.'); return; }
+        if (player.potions[tipo] <= 0) { addLog('Você não tem poções desse tipo!'); return; }
         let cura = Math.floor(totalMaxHp * (parseInt(tipo) / 100));
         player.hp = Math.min(totalMaxHp, player.hp + cura);
         player.potions[tipo]--;
@@ -1284,15 +1322,9 @@
         refreshUI();
     }
 
-    // ---------- FUNÇÕES DE COMPRA DE GEMAS E MENSAGEM ----------
     function comprarGemas(gemas, preco) {
-        if (inCombat) {
-            addLog('Não pode comprar durante combate.');
-            return;
-        }
-        if (!confirm(`Quer comprar ${gemas} gemas por R$ ${preco.toFixed(2)}?`)) {
-            return;
-        }
+        if (inCombat) { addLog('Não pode comprar durante combate.'); return; }
+        if (!confirm(`Quer comprar ${gemas} gemas por R$ ${preco.toFixed(2)}?`)) return;
         alert(`PIX copia e cola: 70472738402\n\nAguardando validação... (1 minuto)`);
         addLog(`⏳ Processando compra de ${gemas} gemas... Aguarde 1 minuto.`);
         setTimeout(() => {
@@ -1331,42 +1363,23 @@
             if (companionsRank.length > 0) {
                 html += `<div class="slot-header">RANK ${rank}</div>`;
                 companionsRank.forEach(c => {
-                    html += `<div class="item-row">
-                        <div class="item-info">
-                            <strong>${c.nome}</strong> (${c.classe})<br>
-                            <small>${c.desc}</small><br>
-                            ⚔️${c.forca} 🔮${c.mana} ❤️${c.hp}
-                        </div>
-                        <button class="btn-contratar" data-id="${c.id}">Contratar (💎${c.preco})</button>
-                    </div>`;
+                    html += `<div class="item-row"><div class="item-info"><strong>${c.nome}</strong> (${c.classe})<br><small>${c.desc}</small><br>⚔️${c.forca} 🔮${c.mana} ❤️${c.hp}</div><button class="btn-contratar" data-id="${c.id}">Contratar (💎${c.preco})</button></div>`;
                 });
             }
         });
         html += '</div>';
         shopDiv.innerHTML = html;
-        
         document.querySelectorAll('.btn-contratar').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                let id = e.target.dataset.id;
-                contratarCompanheiro(id);
-            });
+            btn.addEventListener('click', (e) => { let id = e.target.dataset.id; contratarCompanheiro(id); });
         });
     }
 
     function renderActiveCompanions() {
         let div = document.getElementById('activeCompanions');
-        if (player.companions.length === 0) {
-            div.innerHTML = '<p>Nenhum companheiro contratado</p>';
-            return;
-        }
+        if (player.companions.length === 0) { div.innerHTML = '<p>Nenhum companheiro contratado</p>'; return; }
         let html = '';
         player.companions.forEach(c => {
-            html += `<div class="companion-item">
-                <div class="companion-info">
-                    <span class="companion-name">${c.nome} (${c.rank})</span>
-                    <span class="companion-details">⚔️${c.forca} 🔮${c.mana} ❤️${c.hp}</span>
-                </div>
-            </div>`;
+            html += `<div class="companion-item" data-classe="${c.classe}"><div class="companion-info"><span class="companion-name">${c.nome} (${c.rank})</span><span class="companion-details">⚔️${c.forca} 🔮${c.mana} ❤️${c.hp}</span></div></div>`;
         });
         div.innerHTML = html;
     }
@@ -1374,21 +1387,13 @@
     function renderDungeons() {
         let listDiv = document.getElementById('dungeonList');
         let html = '';
-        
         dungeonInstances.forEach((dungeon, idx) => {
             let rankValue = rankMultiplier[player.rank] || 1;
             let dungeonRankValue = rankMultiplier[dungeon.rank] || 1;
             let isLocked = rankValue < dungeonRankValue;
-            
-            html += `<div class="area-card ${isLocked ? 'locked' : ''}" data-dungeon="${idx}">
-                <div class="area-name">${dungeon.nome}</div>
-                <div class="area-desc">Rank necessário: ${dungeon.rank}</div>
-                ${isLocked ? '<div class="area-req">🔒 Rank insuficiente</div>' : ''}
-            </div>`;
+            html += `<div class="area-card ${isLocked ? 'locked' : ''}" data-dungeon="${idx}"><div class="area-name">${dungeon.nome}</div><div class="area-desc">Rank necessário: ${dungeon.rank}</div>${isLocked ? '<div class="area-req">🔒 Rank insuficiente</div>' : ''}</div>`;
         });
-        
         listDiv.innerHTML = html;
-        
         document.querySelectorAll('.area-card:not(.locked)').forEach(card => {
             card.addEventListener('click', (e) => {
                 if (inCombat) { addLog('Termine o combate primeiro.'); return; }
@@ -1410,13 +1415,9 @@
             player.currentDungeonRank = dungeonInstances[currentDungeonIdx].rank;
             isTestRank = false;
             window.currentTestEnemy = null;
-            
-            if (player.companions.length > 0) {
-                document.getElementById('companionStatus').classList.remove('hidden');
-            }
+            if (player.companions.length > 0) document.getElementById('companionStatus').classList.remove('hidden');
             renderPotionButtons();
             document.getElementById('potionStatus').classList.remove('hidden');
-            
             refreshUI();
         }
         document.getElementById('dungeonPrompt').classList.add('hidden');
@@ -1435,14 +1436,15 @@
             let html = `<h4>${dungeon.nome}</h4>`;
             dungeon.inimigos.forEach((inv, idx) => {
                 let bossTag = inv.isBoss ? ' 👑' : '';
+                let dataAttrs = `data-nome="${inv.nome}" data-rank="${inv.rank}" data-hp="${inv.hp}" data-maxhp="${inv.maxHp}"`;
+                let bossClass = inv.isBoss ? ' is-boss' : '';
                 if (inv.vivo) {
-                    html += `<div class="enemy-entry" data-dungeon="${currentDungeonIdx}" data-idx="${idx}">${inv.nome} (${inv.rank})${bossTag} ❤️${inv.hp}/${inv.maxHp}</div>`;
+                    html += `<div class="enemy-entry${bossClass}" data-dungeon="${currentDungeonIdx}" data-idx="${idx}" ${dataAttrs}>${inv.nome} (${inv.rank})${bossTag} ❤️${inv.hp}/${inv.maxHp}</div>`;
                 } else {
-                    html += `<div class="enemy-entry" style="opacity:0.5;" data-dungeon="${currentDungeonIdx}" data-idx="${idx}">💀 ${inv.nome}${bossTag} (derrotado)</div>`;
+                    html += `<div class="enemy-entry${bossClass}" style="opacity:0.5;" data-dungeon="${currentDungeonIdx}" data-idx="${idx}" ${dataAttrs}>💀 ${inv.nome}${bossTag} (derrotado)</div>`;
                 }
             });
             enemyDiv.innerHTML = html;
-
             document.querySelectorAll('.enemy-entry').forEach(el => {
                 el.addEventListener('click', (e) => {
                     if (inCombat) { addLog('Você já está em combate!'); return; }
@@ -1477,7 +1479,7 @@
         document.getElementById('statVit').innerText = totalMaxHp;
         document.getElementById('statPontos').innerText = player.pontosStatus;
         document.getElementById('statGemas').innerText = player.gems;
-        document.getElementById('statRank').innerText = player.rank; // Atualiza o rank
+        document.getElementById('statRank').innerText = player.rank;
         document.getElementById('gemsDisplay').innerHTML = `💎 ${player.gems}`;
         
         let xpPercent = (player.xp / player.xpNext) * 100;
@@ -1495,21 +1497,12 @@
             let precoVenda = shadowBasePrice[s.rank] * s.level;
             let d = document.createElement('div');
             d.className = 'shadow-item';
-            d.innerHTML = `
-                <div class="shadow-info">
-                    <span class="shadow-name">${s.nome} (${s.rank}) Lv.${s.level}</span>
-                    <span class="shadow-bonus">+${bonus.forca}⚔️ +${bonus.hp}❤️ XP: ${s.xp}/${s.xpNext}</span>
-                </div>
-                <button class="btn-vender" data-index="${idx}">Vender (💎${precoVenda})</button>
-            `;
+            d.innerHTML = `<div class="shadow-info"><span class="shadow-name">${s.nome} (${s.rank}) Lv.${s.level}</span><span class="shadow-bonus">+${bonus.forca}⚔️ +${bonus.hp}❤️ XP: ${s.xp}/${s.xpNext}</span></div><button class="btn-vender" data-index="${idx}">Vender (💎${precoVenda})</button>`;
             sl.appendChild(d);
         });
 
         document.querySelectorAll('.btn-vender').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                let index = parseInt(e.target.dataset.index);
-                venderSombra(index);
-            });
+            btn.addEventListener('click', (e) => { let index = parseInt(e.target.dataset.index); venderSombra(index); });
         });
 
         renderDungeons();
@@ -1523,11 +1516,7 @@
         }
 
         renderPotionButtons();
-        if (currentDungeonIdx !== null) {
-            document.getElementById('potionStatus').classList.remove('hidden');
-        } else {
-            document.getElementById('potionStatus').classList.add('hidden');
-        }
+        document.getElementById('potionStatus').classList.toggle('hidden', currentDungeonIdx === null);
 
         if (player.pontosStatus > 0) {
             document.getElementById('levelUpActions').classList.remove('hidden');
@@ -1543,36 +1532,20 @@
         let shopDiv = document.getElementById('shopPanel');
         let html = '';
         for (let slot in itemCatalog) {
-            let slotNome = {
-                cabeca: 'Cabeça', maoD: 'Mão D', maoE: 'Mão E', tronco: 'Tronco', pernas: 'Pernas'
-            }[slot];
+            let slotNome = { cabeca: 'Cabeça', maoD: 'Mão D', maoE: 'Mão E', tronco: 'Tronco', pernas: 'Pernas' }[slot];
             html += `<div class="equip-slot"><div class="slot-header">${slotNome}</div>`;
             itemCatalog[slot].forEach(item => {
                 let equipado = player.equipment[slot] === item.id ? '✔️' : '';
                 let possui = player.inventario.includes(item.id);
-                let textoBotao = '';
-                if (equipado) {
-                    textoBotao = 'Equipado';
-                } else if (possui) {
-                    textoBotao = 'Equipar';
-                } else {
-                    textoBotao = `Comprar (💎${item.preco})`;
-                }
-                html += `<div class="item-row">
-                    <span class="item-info">${item.nome} (HP:${item.hp||0} FOR:${item.forca||0} MAN:${item.mana||0})</span>
-                    <button class="btn-equip" data-slot="${slot}" data-item-id="${item.id}">${textoBotao}</button>
-                </div>`;
+                let textoBotao = equipado ? 'Equipado' : possui ? 'Equipar' : `Comprar (💎${item.preco})`;
+                html += `<div class="item-row"><span class="item-info">${item.nome} (HP:${item.hp||0} FOR:${item.forca||0} MAN:${item.mana||0})</span><button class="btn-equip" data-slot="${slot}" data-item-id="${item.id}">${textoBotao}</button></div>`;
             });
             if (player.equipment[slot]) {
-                html += `<div class="item-row">
-                    <span class="item-info">Nenhum</span>
-                    <button class="btn-equip" data-slot="${slot}" data-item-id="none">Remover</button>
-                </div>`;
+                html += `<div class="item-row"><span class="item-info">Nenhum</span><button class="btn-equip" data-slot="${slot}" data-item-id="none">Remover</button></div>`;
             }
             html += '</div>';
         }
         shopDiv.innerHTML = html;
-
         document.querySelectorAll('.btn-equip').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 let slot = e.target.dataset.slot;
@@ -1584,42 +1557,29 @@
 
     function equiparItem(slot, itemId) {
         if (inCombat) { addLog('Não pode equipar durante combate.'); return; }
-
         if (itemId === null) {
             player.equipment[slot] = null;
             addLog(`Removeu equipamento do slot ${slot}.`);
             refreshUI();
             return;
         }
-
         let item = encontrarItemPorId(slot, itemId);
-        if (!item) {
-            addLog('Item inválido.');
-            return;
-        }
-
+        if (!item) { addLog('Item inválido.'); return; }
         if (player.inventario.includes(itemId)) {
             player.equipment[slot] = itemId;
             addLog(`Equipou ${item.nome} no slot ${slot}.`);
         } else {
-            if (player.gems < item.preco) {
-                addLog('Gemas insuficientes!');
-                return;
-            }
+            if (player.gems < item.preco) { addLog('Gemas insuficientes!'); return; }
             player.gems -= item.preco;
             player.inventario.push(itemId);
             player.equipment[slot] = itemId;
             addLog(`Comprou e equipou ${item.nome} no slot ${slot}.`);
         }
-
         refreshUI();
     }
 
     function venderSombra(index) {
-        if (inCombat) {
-            addLog('Não pode vender sombras durante combate.');
-            return;
-        }
+        if (inCombat) { addLog('Não pode vender sombras durante combate.'); return; }
         if (index < 0 || index >= player.shadows.length) return;
         let sombra = player.shadows[index];
         let preco = shadowBasePrice[sombra.rank] * sombra.level;
@@ -1631,7 +1591,6 @@
 
     function atacar() {
         if (!inCombat) return;
-
         let inimigo;
         if (isTestRank) {
             if (!window.currentTestEnemy) return;
@@ -1640,7 +1599,6 @@
             if (currentEnemyIndex === null || currentDungeonIdx === null) return;
             inimigo = dungeonInstances[currentDungeonIdx].inimigos[currentEnemyIndex];
         }
-
         if (!inimigo.vivo) { 
             inCombat = false; 
             if (!isTestRank) currentEnemyIndex = null;
@@ -1648,20 +1606,16 @@
             refreshUI(); 
             return; 
         }
-
         let dano = (totalForca * 2) + Math.floor(Math.random() * 5);
         inimigo.hp -= dano;
         addLog(`Você causou ${dano} de dano. ${inimigo.nome} HP: ${inimigo.hp}/${inimigo.maxHp}`);
-
         if (inimigo.hp <= 0) {
             inimigo.vivo = false;
             if (!isTestRank) {
                 player.xp += inimigo.xp;
                 player.gems += inimigo.gem;
                 addLog(`💀 ${inimigo.nome} derrotado! +${inimigo.xp} XP, +${inimigo.gem} gemas.`);
-                
                 darXPSombras(inimigo.xp);
-                
                 while (player.xp >= player.xpNext) {
                     player.level++;
                     player.xp -= player.xpNext;
@@ -1681,7 +1635,6 @@
                 } else {
                     addLog(`Você já é Rank S+, não pode subir mais.`);
                 }
-                // Restaura a vida após o teste de ranking
                 player.hp = totalMaxHp;
                 inCombat = false;
                 isTestRank = false;
@@ -1695,20 +1648,14 @@
             refreshUI();
             return;
         }
-
         let danoInimigo = inimigo.forca + Math.floor(Math.random() * 4);
         player.hp -= danoInimigo;
         addLog(`😖 ${inimigo.nome} causou ${danoInimigo} de dano. Seu HP: ${player.hp}/${totalMaxHp}`);
-
         if (player.hp <= 0) {
             aplicarPenalidadeMorte();
             inCombat = false;
-            if (isTestRank) {
-                isTestRank = false;
-                window.currentTestEnemy = null;
-            } else {
-                currentEnemyIndex = null;
-            }
+            if (isTestRank) { isTestRank = false; window.currentTestEnemy = null; }
+            else currentEnemyIndex = null;
             refreshUI();
             return;
         }
@@ -1726,12 +1673,8 @@
         if (!inCombat) return;
         aplicarPenalidadeFuga();
         inCombat = false;
-        if (isTestRank) {
-            isTestRank = false;
-            window.currentTestEnemy = null;
-        } else {
-            currentEnemyIndex = null;
-        }
+        if (isTestRank) { isTestRank = false; window.currentTestEnemy = null; }
+        else currentEnemyIndex = null;
         document.getElementById('combatActions').classList.add('hidden');
         refreshUI();
     }
@@ -1741,7 +1684,6 @@
         if (currentDungeonIdx === null || currentEnemyIndex === null) return;
         let inimigo = dungeonInstances[currentDungeonIdx].inimigos[currentEnemyIndex];
         if (!inimigo || inimigo.vivo) return;
-
         let maxShadow = Math.floor(totalMana / 30);
         if (player.shadows.length >= maxShadow) {
             addLog('Você atingiu o limite de sombras! Aumente sua Mana para invocar mais.');
@@ -1750,21 +1692,13 @@
             refreshUI();
             return;
         }
-
         let rankVal = { 'E':1, 'D':5, 'C':25, 'B':125, 'A':625, 'S':3125, 'S+':15625 };
         let playerRankVal = rankVal[player.rank] || 1;
         let inimigoRankVal = rankVal[inimigo.rank] || 1;
         let chance = 0.3 + (playerRankVal - inimigoRankVal) * 0.1;
         chance = Math.min(0.9, Math.max(0.2, chance));
-
         if (Math.random() < chance) {
-            let novaSombra = {
-                nome: inimigo.nome,
-                rank: inimigo.rank,
-                level: 1,
-                xp: 0,
-                xpNext: 100
-            };
+            let novaSombra = { nome: inimigo.nome, rank: inimigo.rank, level: 1, xp: 0, xpNext: 100 };
             player.shadows.push(novaSombra);
             addLog(`✨ Sucesso! ${inimigo.nome} se tornou sua sombra (Nv.1).`);
             document.getElementById('shadowRecruit').classList.add('hidden');
@@ -1788,32 +1722,15 @@
     }
 
     function iniciarTesteRank() {
-        if (inCombat) {
-            addLog('Você já está em combate!');
-            return;
-        }
+        if (inCombat) { addLog('Você já está em combate!'); return; }
         let proximoRank = obterProximoRank(player.rank);
-        if (!proximoRank) {
-            addLog('Você já é Rank S+, não pode testar mais.');
-            return;
-        }
+        if (!proximoRank) { addLog('Você já é Rank S+, não pode testar mais.'); return; }
         let rank = proximoRank;
         let mult = rankMultiplier[rank];
         let nome = `Guardião Rank ${rank}`;
         let hp = 50 * mult;
         let forca = 10 * mult;
-        let xp = 0;
-        let gem = 0;
-        let inimigoTeste = {
-            nome,
-            rank,
-            hp,
-            maxHp: hp,
-            forca,
-            xp,
-            gem,
-            vivo: true
-        };
+        let inimigoTeste = { nome, rank, hp, maxHp: hp, forca, xp: 0, gem: 0, vivo: true };
         window.currentTestEnemy = inimigoTeste;
         isTestRank = true;
         inCombat = true;
@@ -1842,10 +1759,7 @@
 
     document.getElementById('btnIniciarJogo').addEventListener('click', () => {
         let nome = document.getElementById('playerName').value.trim();
-        if (nome === '') {
-            alert('Por favor, digite o nome do caçador!');
-            return;
-        }
+        if (nome === '') { alert('Por favor, digite o nome do caçador!'); return; }
         player.name = nome;
         document.getElementById('creationScreen').classList.add('hidden');
         document.getElementById('gameScreen').classList.remove('hidden');
@@ -1867,13 +1781,9 @@
     });
 
     document.querySelectorAll('.btn-comprar-pocao').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            let tipo = e.target.dataset.tipo;
-            comprarPocao(tipo);
-        });
+        btn.addEventListener('click', (e) => { let tipo = e.target.dataset.tipo; comprarPocao(tipo); });
     });
 
-    // Event listeners para os botões de compra de gemas
     document.querySelectorAll('.btn-comprar-gemas').forEach(btn => {
         btn.addEventListener('click', (e) => {
             let gemas = parseInt(e.target.dataset.gemas);
@@ -1891,7 +1801,6 @@
     document.getElementById('btnVida').addEventListener('click', () => addStat('vida'));
     document.getElementById('btnSubirRanking').addEventListener('click', iniciarTesteRank);
 
-    // Botão Loja de Gemas (abre a aba correspondente)
     document.getElementById('btnLojaGemas').addEventListener('click', () => {
         document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.shop-panel').forEach(p => p.classList.remove('active'));
@@ -1899,7 +1808,6 @@
         document.getElementById('shopGems').classList.add('active');
     });
 
-    // Botão OK do diálogo de mensagens
     document.getElementById('messageOk').addEventListener('click', () => {
         document.getElementById('messagePrompt').classList.add('hidden');
     });
